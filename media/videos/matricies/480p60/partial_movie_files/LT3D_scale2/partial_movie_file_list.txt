@@ -1,0 +1,6 @@
+# This file is used internally by FFMPEG.
+file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT3D_scale2/1978358225_1526609350_2320637962.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT3D_scale2/2124573492_1531998346_3123922435.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT3D_scale2/440022620_1305564518_1720951278.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT3D_scale2/676745095_1531998346_499814546.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT3D_scale2/2501930648_3822001303_3872156000.mp4'

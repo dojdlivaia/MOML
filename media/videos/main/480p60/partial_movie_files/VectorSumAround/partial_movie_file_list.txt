@@ -1,0 +1,11 @@
+# This file is used internally by FFMPEG.
+file 'file:/home/koroteeev/projects/my-project/media/videos/main/480p60/partial_movie_files/VectorSumAround/1570942879_3094114276_223132457.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/main/480p60/partial_movie_files/VectorSumAround/3874791346_60490962_1730338872.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/main/480p60/partial_movie_files/VectorSumAround/3874791346_276558722_678346669.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/main/480p60/partial_movie_files/VectorSumAround/3874791346_640274808_1263040248.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/main/480p60/partial_movie_files/VectorSumAround/3874791346_2341082278_3372733790.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/main/480p60/partial_movie_files/VectorSumAround/3874791346_2644703387_464796206.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/main/480p60/partial_movie_files/VectorSumAround/3874791346_2341082278_3355740645.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/main/480p60/partial_movie_files/VectorSumAround/3874791346_2341082278_3482159070.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/main/480p60/partial_movie_files/VectorSumAround/3874791346_609629020_963228675.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/main/480p60/partial_movie_files/VectorSumAround/3874791346_4247107814_3605423798.mp4'

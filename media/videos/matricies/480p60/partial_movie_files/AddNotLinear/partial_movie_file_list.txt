@@ -1,0 +1,7 @@
+# This file is used internally by FFMPEG.
+file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/AddNotLinear/1570942879_2134247306_3178627338.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/AddNotLinear/3874791346_2611651933_1803797759.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/AddNotLinear/3874791346_3931028009_1685771033.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/AddNotLinear/3874791346_667144672_1164799772.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/AddNotLinear/3874791346_2935045182_304199092.mp4'
+file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/AddNotLinear/3874791346_667144672_3122908044.mp4'
