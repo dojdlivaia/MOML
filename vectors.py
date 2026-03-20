@@ -1,9 +1,12 @@
-from manim import *
 import manim as m
 import numpy as np
 from theming import LinearTransformationScene_, Scene_, ThreeDScene_
 
 class VectorsExample(Scene_):
+    """
+    Демонстрирует понятие вектора как направления. 
+    Анимирует несколько векторов на плоскости.
+    """
     def construct(self):
         plane = m.m.NumberPlane()
         self.play(m.Create(plane))
@@ -29,7 +32,9 @@ class VectorsExample(Scene_):
         self.wait(0.5)
 
         label.become(vector.coordinate_label(integer_labels=False))
-        label.add_updater(lambda m: m.become(vector.coordinate_label(integer_labels=False)))
+        label.add_updater(
+            lambda m: m.become(vector.coordinate_label(integer_labels=False))
+            )
         self.wait(0.5)
 
         self.play(x.animate.set_value(-2.73), y.animate.set_value(-0.376))
@@ -43,6 +48,9 @@ class VectorsExample(Scene_):
         self.wait()
 
 class VectorShift(Scene_):
+    """
+    Демонстриурет параллельный перенос вектора и что это остается тем же самым вектором.
+    """
     def construct(self):
         plane = m.NumberPlane()
         self.play(m.Create(plane), run_time=0.3)
@@ -67,6 +75,11 @@ class VectorShift(Scene_):
 
 
 class VectorsAsDots(Scene_):
+    """
+    Показывает два представления вектора - как стрелок и как точки.
+    На координатной плоскости появляются несколько векторов, изображенных как стрелки,
+    затем они преобразуются в точки, сохраняя подписи с координатами.
+    """
     def construct(self):
         plane = m.NumberPlane()
         self.play(m.Create(plane), run_time=0.3)
@@ -103,7 +116,7 @@ class VectorsAsDots(Scene_):
         self.wait()
 
 
-class VectorsAsLine(Scene_):
+class _VectorsAsLine(Scene_):
     def construct(self):
         plane = m.NumberPlane()
         self.play(m.Create(plane), run_time=0.3)
@@ -134,6 +147,11 @@ class VectorsAsLine(Scene_):
         self.wait(2)
 
 class VectorsNDim(ThreeDScene_):
+    """
+    Демонстрирует вектора в пространствах разной размерности.
+    Показывает вектор на координатной прямой, затем он преобразуется в двумерный и затем - 
+    в трехмерный вектор.
+    """
     def construct(self):
         plane = m.NumberLine()
         self.play(m.Create(plane), run_time=0.3)
@@ -201,7 +219,7 @@ class VectorsNDim(ThreeDScene_):
 
         self.wait(2)
 
-class Vectorsd(ThreeDScene_):
+class _Vectorsd(ThreeDScene_):
     def construct(self):
         plane = m.NumberLine()
         self.play(m.Create(plane), run_time=0.3)
@@ -246,6 +264,11 @@ class Vectorsd(ThreeDScene_):
 
 
 class VectorScaling(Scene_):
+    """
+    Иллюстрирует операцию умножения вектора на скаляр.
+    Показывает вектор, выводит значение скаляра и демонстриурет анимацию изменения вектора
+    при изменении скаляра, на который он умножается.
+    """
     def construct(self):
         plane = m.NumberPlane()
         self.play(m.Create(plane))
@@ -263,7 +286,9 @@ class VectorScaling(Scene_):
         label = m.always_redraw(lambda: vector.coordinate_label(integer_labels=False))
         self.play(m.Write(label))
 
-        text = m.always_redraw(lambda: m.Text("Скаляр: {:.2f}".format(s.get_value())).shift(m.UP * 3.5))
+        text = m.always_redraw(lambda: m.Text(
+            "Скаляр: {:.2f}".format(s.get_value())
+            ).shift(m.UP * 3.5))
         self.play(m.Write(text))
 
         scaled = m.always_redraw(lambda: m.Vector([
@@ -272,7 +297,9 @@ class VectorScaling(Scene_):
             ], color=m.YELLOW))
         self.play(m.Create(scaled))
 
-        label = m.always_redraw(lambda: scaled.coordinate_label(integer_labels=False, color=m.YELLOW))
+        label = m.always_redraw(
+            lambda: scaled.coordinate_label(integer_labels=False, color=m.YELLOW)
+            )
         self.play(m.Write(label))
 
         self.wait()
@@ -298,7 +325,11 @@ class VectorScaling(Scene_):
         self.wait(2)
 
 
-class VectorSum(Scene_):
+class VectorSumTriangle(Scene_):
+    """
+    Иллюстрирует операцию сложения векторов.
+    Показывает два произвольных вектора и строит их сумму по правилу треугольника.
+    """
     def construct(self):
         plane = m.NumberPlane()
         self.play(m.Create(plane), run_time=0.2)
@@ -327,7 +358,12 @@ class VectorSum(Scene_):
         self.wait(2)
 
 
-class VectorSumAround(Scene_):
+class VectorSumParallelogram(Scene_):
+    """
+    Иллюстрирует операцию сложения векторов.
+    Строит два вектора на координатной плоскости и строит их сумму по правилу 
+    параллелограмма.
+    """
     def construct(self):
         plane = m.NumberPlane()
         self.play(m.Create(plane), run_time=0.2)
@@ -362,6 +398,11 @@ class VectorSumAround(Scene_):
 
 
 class VectorSumScaling(Scene_):
+    """
+    Иллюстрирует дистрибутивное свойство операции сложения векторов.
+    Строит сумму двух векторов и умножает ее на скаляр. Видно, что масштабируются 
+    и слагаемые и сумма.
+    """
     def construct(self):
         plane = m.NumberPlane()
         self.play(m.Create(plane), run_time=0.3)
@@ -493,302 +534,12 @@ class VectorLinearCombine(Scene_):
         self.wait(2)
 
 
-class VectorLinearCombineCollinear(Scene_):
-    def construct(self):
-        plane = m.NumberPlane()
-        self.play(m.Create(plane), run_time=0.3)
-
-        a = m.ValueTracker(1)
-        b = m.ValueTracker(1)
-
-        x1, x2 = 0.8, 0.5
-        y1, y2 = 1.6, 1
-
-        v1 = m.always_redraw(lambda: m.Vector([
-            int(a.get_value() * x1 * 100) / 100, 
-            int(a.get_value() * x2 * 100) / 100
-            ]))
-        self.play(m.Create(v1), run_time=0.3)
-
-        v2 = m.always_redraw(lambda: m.Vector([
-            int(b.get_value() * y1 * 100) / 100, 
-            int(b.get_value() * y2 * 100) / 100
-            ], color=m.YELLOW))
-        self.play(m.Create(v2), run_time=0.3)
-
-        text = m.always_redraw(lambda: 
-                m.Text("A = {:.2f}; B = {:.2f}".format(a.get_value(), b.get_value())).shift(m.UP * 3.5))
-        self.play(m.Write(text), run_time=0.3)
-
-        v3 = m.always_redraw(lambda: m.Vector([
-            int((a.get_value() * x1 + b.get_value() * y1) * 100) / 100, 
-            int((a.get_value() * x2 + b.get_value() * y2) * 100) / 100
-            ], color=m.PINK))
-        self.play(m.Create(v3), run_time=0.3)
-
-        self.wait()
-
-        self.play(b.animate.set_value(1.5))
-        self.wait(0.5)
-
-        self.play(b.animate.set_value(-0.7))
-        self.wait(0.5)
-
-        self.play(b.animate.set_value(-3))
-        self.wait(0.5)
-
-        self.play(b.animate.set_value(0))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(-1.5), b.animate.set_value(-1.5))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(-3), b.animate.set_value(2))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(10), b.animate.set_value(-4))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(-1), b.animate.set_value(2))
-        self.wait(0.5)
-
-        self.wait(2)
-
-
-class VectorLinearCombineNull(Scene_):
-    def construct(self):
-        plane = m.NumberPlane()
-        self.play(m.Create(plane), run_time=0.3)
-
-        a = m.ValueTracker(1)
-        b = m.ValueTracker(1)
-
-        x1, x2 = 0, 0
-        y1, y2 = 0, 0
-
-        v1 = m.Dot()
-        self.play(m.Create(v1), run_time=0.3)
-
-        v2 = m.always_redraw(lambda: m.Vector([
-            int(b.get_value() * y1 * 100) / 100, 
-            int(b.get_value() * y2 * 100) / 100
-            ], color=m.YELLOW))
-        self.play(m.Create(v2), run_time=0.3)
-
-        text = m.always_redraw(lambda: 
-                m.Text("A = {:.2f}; B = {:.2f}".format(a.get_value(), b.get_value())).shift(m.UP * 3.5))
-        self.play(m.Write(text), run_time=0.3)
-
-        v3 = m.always_redraw(lambda: m.Vector([
-            int((a.get_value() * x1 + b.get_value() * y1) * 100) / 100, 
-            int((a.get_value() * x2 + b.get_value() * y2) * 100) / 100
-            ], color=m.PINK))
-        self.play(m.Create(v3), run_time=0.3)
-
-        self.wait()
-
-        self.play(b.animate.set_value(1.5))
-        self.wait(0.5)
-
-        self.play(b.animate.set_value(-0.7))
-        self.wait(0.5)
-
-        self.play(b.animate.set_value(-3))
-        self.wait(0.5)
-
-        self.play(b.animate.set_value(0))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(-1.5), b.animate.set_value(-1.5))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(-3), b.animate.set_value(2))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(10), b.animate.set_value(-4))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(-1), b.animate.set_value(2))
-        self.wait(0.5)
-
-        self.wait(2)
-
-
-class VectorLinearCombineOneNull(Scene_):
-    def construct(self):
-        plane = m.NumberPlane()
-        self.play(m.Create(plane), run_time=0.3)
-
-        a = m.ValueTracker(1)
-        b = m.ValueTracker(1)
-
-        x1, x2 = 0, 0
-        y1, y2 = 1.5, 1
-
-        v1 = m.Dot()
-        self.play(m.Create(v1), run_time=0.3)
-
-        v2 = m.always_redraw(lambda: m.Vector([
-            int(b.get_value() * y1 * 100) / 100, 
-            int(b.get_value() * y2 * 100) / 100
-            ], color=m.YELLOW))
-        self.play(m.Create(v2), run_time=0.3)
-
-        text = m.always_redraw(lambda: 
-                m.Text("A = {:.2f}; B = {:.2f}".format(a.get_value(), b.get_value())).shift(m.UP * 3.5))
-        self.play(m.Write(text), run_time=0.3)
-
-        v3 = m.always_redraw(lambda: m.Vector([
-            int((a.get_value() * x1 + b.get_value() * y1) * 100) / 100, 
-            int((a.get_value() * x2 + b.get_value() * y2) * 100) / 100
-            ], color=m.PINK))
-        self.play(m.Create(v3), run_time=0.3)
-
-        self.wait()
-
-        self.play(b.animate.set_value(1.5))
-        self.wait(0.5)
-
-        self.play(b.animate.set_value(-0.7))
-        self.wait(0.5)
-
-        self.play(b.animate.set_value(-3))
-        self.wait(0.5)
-
-        self.play(b.animate.set_value(0))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(-1.5), b.animate.set_value(-1.5))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(-3), b.animate.set_value(2))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(10), b.animate.set_value(-4))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(-1), b.animate.set_value(2))
-        self.wait(0.5)
-
-        self.wait(2)
-
-
-class VectorLinearCombineOneNull(Scene_):
-    def construct(self):
-        plane = m.NumberPlane()
-        self.play(m.Create(plane), run_time=0.3)
-
-        a = m.ValueTracker(1)
-        b = m.ValueTracker(1)
-
-        x1, x2 = 0, 0
-        y1, y2 = 1.5, 1
-
-        v1 = m.Dot()
-        self.play(m.Create(v1), run_time=0.3)
-
-        v2 = m.always_redraw(lambda: m.Vector([
-            int(b.get_value() * y1 * 100) / 100, 
-            int(b.get_value() * y2 * 100) / 100
-            ], color=m.YELLOW))
-        self.play(m.Create(v2), run_time=0.3)
-
-        text = m.always_redraw(lambda: 
-                m.Text("A = {:.2f}; B = {:.2f}".format(a.get_value(), b.get_value())).shift(m.UP * 3.5))
-        self.play(m.Write(text), run_time=0.3)
-
-        v3 = m.always_redraw(lambda: m.Vector([
-            int((a.get_value() * x1 + b.get_value() * y1) * 100) / 100, 
-            int((a.get_value() * x2 + b.get_value() * y2) * 100) / 100
-            ], color=m.PINK))
-        self.play(m.Create(v3), run_time=0.3)
-
-        self.wait()
-
-        self.play(b.animate.set_value(1.5))
-        self.wait(0.5)
-
-        self.play(b.animate.set_value(-0.7))
-        self.wait(0.5)
-
-        self.play(b.animate.set_value(-3))
-        self.wait(0.5)
-
-        self.play(b.animate.set_value(0))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(-1.5), b.animate.set_value(-1.5))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(-3), b.animate.set_value(2))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(10), b.animate.set_value(-4))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(-1), b.animate.set_value(2))
-        self.wait(0.5)
-
-        self.wait(2)
-
-
-class VectorLinearCombine23D(ThreeDScene_):
-    def construct(self):
-        plane = m.ThreeDAxes()
-        self.play(m.Create(plane), run_time=0.3)
-
-        self.move_camera(phi=75 * m.DEGREES, theta=-15 * m.DEGREES, zoom=1, run_time=1.5)
-        self.begin_3dillusion_camera_rotation(rate=1.5)
-        self.wait(0.5)
-
-        a = m.ValueTracker(1)
-        b = m.ValueTracker(1)
-
-        x1, x2, x3 = 2, 1.5, 0.5
-        y1, y2, y3 = -1.5, 1, 0.5
-
-        v1 = m.always_redraw(lambda: m.Vector([
-            int(a.get_value() * x1 * 100) / 100, 
-            int(a.get_value() * x2 * 100) / 100, 
-            int(a.get_value() * x3 * 100) / 100
-            ]))
-        self.play(m.Create(v1), run_time=0.3)
-
-        v2 = m.always_redraw(lambda: m.Vector([
-            int(b.get_value() * y1 * 100) / 100, 
-            int(b.get_value() * y2 * 100) / 100, 
-            int(b.get_value() * y3 * 100) / 100
-            ], color=m.YELLOW))
-        self.play(m.Create(v2), run_time=0.3)
-
-        v3 = m.always_redraw(lambda: m.Vector([
-            int((a.get_value() * x1 + b.get_value() * y1) * 100) / 100, 
-            int((a.get_value() * x2 + b.get_value() * y2) * 100) / 100, 
-            int((a.get_value() * x3 + b.get_value() * y3) * 100) / 100
-            ], color=m.PINK))
-        self.play(m.Create(v3), run_time=0.3)
-
-        self.wait()
-
-        self.play(a.animate.set_value(1.5), b.animate.set_value(1.5))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(3), b.animate.set_value(2))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(1), b.animate.set_value(-2))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(1), b.animate.set_value(2))
-        self.wait(0.5)
-
-        self.play(a.animate.set_value(0.5), b.animate.set_value(1.5))
-        self.wait(0.5)
-
-        self.wait(2)
-
-
 class VectorSumThree(Scene_):
+    """
+    Демонстрирует понятие линейной зависимости трех векторов на плоскости.
+    Строит три вектора на плоскости и показывает, как каждый может быть получен
+    линейной комбинацией двух других.
+    """
     def construct(self):
         plane = m.NumberPlane()
         self.play(m.Create(plane), run_time=0.2)
@@ -850,6 +601,11 @@ class VectorSumThree(Scene_):
 
 
 class VectorBasis(Scene_):
+    """
+    Иллюстрирует понятие базиса векторного пространства.
+    Строит вектор и показывает, как он независимо от всего положения может быть 
+    разложен на компоненты базиса.
+    """
     def construct(self):
         plane = m.NumberPlane()
         self.play(m.Create(plane), run_time=0.3)
@@ -914,7 +670,256 @@ class VectorBasis(Scene_):
         self.wait(2)
 
 
+class VectorLinearCombineCollinear(Scene_):
+    """
+    Демонстрирует концепцию линейной оболочки системы векторов.
+    Строит два коллинейарных вектора и их линейную комбинацию. Варьирует коэффициенты
+    и показывает, какие вектора могут получиться.
+    """
+    def construct(self):
+        plane = m.NumberPlane()
+        self.play(m.Create(plane), run_time=0.3)
+
+        a = m.ValueTracker(1)
+        b = m.ValueTracker(1)
+
+        x1, x2 = 0.8, 0.5
+        y1, y2 = 1.6, 1
+
+        v1 = m.always_redraw(lambda: m.Vector([
+            int(a.get_value() * x1 * 100) / 100, 
+            int(a.get_value() * x2 * 100) / 100
+            ]))
+        self.play(m.Create(v1), run_time=0.3)
+
+        v2 = m.always_redraw(lambda: m.Vector([
+            int(b.get_value() * y1 * 100) / 100, 
+            int(b.get_value() * y2 * 100) / 100
+            ], color=m.YELLOW))
+        self.play(m.Create(v2), run_time=0.3)
+
+        text = m.always_redraw(lambda: 
+                m.Text("A = {:.2f}; B = {:.2f}".format(a.get_value(), b.get_value())).shift(m.UP * 3.5))
+        self.play(m.Write(text), run_time=0.3)
+
+        v3 = m.always_redraw(lambda: m.Vector([
+            int((a.get_value() * x1 + b.get_value() * y1) * 100) / 100, 
+            int((a.get_value() * x2 + b.get_value() * y2) * 100) / 100
+            ], color=m.PINK))
+        self.play(m.Create(v3), run_time=0.3)
+
+        self.wait()
+
+        self.play(b.animate.set_value(1.5))
+        self.wait(0.5)
+
+        self.play(b.animate.set_value(-0.7))
+        self.wait(0.5)
+
+        self.play(b.animate.set_value(-3))
+        self.wait(0.5)
+
+        self.play(b.animate.set_value(0))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(-1.5), b.animate.set_value(-1.5))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(-3), b.animate.set_value(2))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(10), b.animate.set_value(-4))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(-1), b.animate.set_value(2))
+        self.wait(0.5)
+
+        self.wait(2)
+
+
+class _VectorLinearCombineNull(Scene_):
+    def construct(self):
+        plane = m.NumberPlane()
+        self.play(m.Create(plane), run_time=0.3)
+
+        a = m.ValueTracker(1)
+        b = m.ValueTracker(1)
+
+        x1, x2 = 0, 0
+        y1, y2 = 0, 0
+
+        v1 = m.Dot()
+        self.play(m.Create(v1), run_time=0.3)
+
+        v2 = m.always_redraw(lambda: m.Vector([
+            int(b.get_value() * y1 * 100) / 100, 
+            int(b.get_value() * y2 * 100) / 100
+            ], color=m.YELLOW))
+        self.play(m.Create(v2), run_time=0.3)
+
+        text = m.always_redraw(lambda: 
+                m.Text("A = {:.2f}; B = {:.2f}".format(a.get_value(), b.get_value())).shift(m.UP * 3.5))
+        self.play(m.Write(text), run_time=0.3)
+
+        v3 = m.always_redraw(lambda: m.Vector([
+            int((a.get_value() * x1 + b.get_value() * y1) * 100) / 100, 
+            int((a.get_value() * x2 + b.get_value() * y2) * 100) / 100
+            ], color=m.PINK))
+        self.play(m.Create(v3), run_time=0.3)
+
+        self.wait()
+
+        self.play(b.animate.set_value(1.5))
+        self.wait(0.5)
+
+        self.play(b.animate.set_value(-0.7))
+        self.wait(0.5)
+
+        self.play(b.animate.set_value(-3))
+        self.wait(0.5)
+
+        self.play(b.animate.set_value(0))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(-1.5), b.animate.set_value(-1.5))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(-3), b.animate.set_value(2))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(10), b.animate.set_value(-4))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(-1), b.animate.set_value(2))
+        self.wait(0.5)
+
+        self.wait(2)
+
+
+class _VectorLinearCombineOneNull(Scene_):
+    def construct(self):
+        plane = m.NumberPlane()
+        self.play(m.Create(plane), run_time=0.3)
+
+        a = m.ValueTracker(1)
+        b = m.ValueTracker(1)
+
+        x1, x2 = 0, 0
+        y1, y2 = 1.5, 1
+
+        v1 = m.Dot()
+        self.play(m.Create(v1), run_time=0.3)
+
+        v2 = m.always_redraw(lambda: m.Vector([
+            int(b.get_value() * y1 * 100) / 100, 
+            int(b.get_value() * y2 * 100) / 100
+            ], color=m.YELLOW))
+        self.play(m.Create(v2), run_time=0.3)
+
+        text = m.always_redraw(lambda: 
+                m.Text("A = {:.2f}; B = {:.2f}".format(a.get_value(), b.get_value())).shift(m.UP * 3.5))
+        self.play(m.Write(text), run_time=0.3)
+
+        v3 = m.always_redraw(lambda: m.Vector([
+            int((a.get_value() * x1 + b.get_value() * y1) * 100) / 100, 
+            int((a.get_value() * x2 + b.get_value() * y2) * 100) / 100
+            ], color=m.PINK))
+        self.play(m.Create(v3), run_time=0.3)
+
+        self.wait()
+
+        self.play(b.animate.set_value(1.5))
+        self.wait(0.5)
+
+        self.play(b.animate.set_value(-0.7))
+        self.wait(0.5)
+
+        self.play(b.animate.set_value(-3))
+        self.wait(0.5)
+
+        self.play(b.animate.set_value(0))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(-1.5), b.animate.set_value(-1.5))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(-3), b.animate.set_value(2))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(10), b.animate.set_value(-4))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(-1), b.animate.set_value(2))
+        self.wait(0.5)
+
+        self.wait(2)
+
+
+class VectorLinearCombine23D(ThreeDScene_):
+    """
+    Демонстрирует понятие линейной оболочки в трехмерном пространстве.
+    Строит два трехмерных вектора и демонстрирует их всевозможные линейные комбинации.
+    """
+    def construct(self):
+        plane = m.ThreeDAxes()
+        self.play(m.Create(plane), run_time=0.3)
+
+        self.move_camera(phi=75 * m.DEGREES, theta=-15 * m.DEGREES, zoom=1, run_time=1.5)
+        self.begin_3dillusion_camera_rotation(rate=1.5)
+        self.wait(0.5)
+
+        a = m.ValueTracker(1)
+        b = m.ValueTracker(1)
+
+        x1, x2, x3 = 2, 1.5, 0.5
+        y1, y2, y3 = -1.5, 1, 0.5
+
+        v1 = m.always_redraw(lambda: m.Vector([
+            int(a.get_value() * x1 * 100) / 100, 
+            int(a.get_value() * x2 * 100) / 100, 
+            int(a.get_value() * x3 * 100) / 100
+            ]))
+        self.play(m.Create(v1), run_time=0.3)
+
+        v2 = m.always_redraw(lambda: m.Vector([
+            int(b.get_value() * y1 * 100) / 100, 
+            int(b.get_value() * y2 * 100) / 100, 
+            int(b.get_value() * y3 * 100) / 100
+            ], color=m.YELLOW))
+        self.play(m.Create(v2), run_time=0.3)
+
+        v3 = m.always_redraw(lambda: m.Vector([
+            int((a.get_value() * x1 + b.get_value() * y1) * 100) / 100, 
+            int((a.get_value() * x2 + b.get_value() * y2) * 100) / 100, 
+            int((a.get_value() * x3 + b.get_value() * y3) * 100) / 100
+            ], color=m.PINK))
+        self.play(m.Create(v3), run_time=0.3)
+
+        self.wait()
+
+        self.play(a.animate.set_value(1.5), b.animate.set_value(1.5))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(3), b.animate.set_value(2))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(1), b.animate.set_value(-2))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(1), b.animate.set_value(2))
+        self.wait(0.5)
+
+        self.play(a.animate.set_value(0.5), b.animate.set_value(1.5))
+        self.wait(0.5)
+
+        self.wait(2)
+
+
 class AddFunction(LinearTransformationScene_):
+    """
+    Показывает пример параллельного переноса как нелинейного преобразования 
+    векторного пространства.
+    """
     def __init__(self, **kwargs):
         LinearTransformationScene_.__init__(
             self,
@@ -926,7 +931,9 @@ class AddFunction(LinearTransformationScene_):
 
     def construct(self):
         s = 1
-        self.play(m.Create(m.Tex(r"$f(\vec{v}) = \vec{v} + \begin{bmatrix} 1  \\ 2 \end{bmatrix}$").scale(s).to_edge(m.UP, buff=1).to_edge(m.LEFT)), run_time=0.5)
+        self.play(m.Create(m.Tex(
+            r"$f(\vec{v}) = \vec{v} + \begin{bmatrix} 1  \\ 2 \end{bmatrix}$"
+            ).scale(s).to_edge(m.UP, buff=1).to_edge(m.LEFT)), run_time=0.5)
         self.moving_mobjects = []
 
         self.play(m.Create(m.Vector([3, -2])), run_time=0.3)
@@ -939,6 +946,9 @@ class AddFunction(LinearTransformationScene_):
 
 
 class AddNotLinear(LinearTransformationScene_):
+    """
+    Объясняет, почему параллельный перенос - не является линейным преобразованием.
+    """
     def __init__(self, **kwargs):
         LinearTransformationScene_.__init__(
             self,
@@ -962,7 +972,7 @@ class AddNotLinear(LinearTransformationScene_):
         self.wait()   
 
 
-class NonLinearTransform(LinearTransformationScene_):
+class NonLinearTransform_(LinearTransformationScene_):
     def __init__(self, **kwargs):
         LinearTransformationScene_.__init__(
             self,
@@ -979,18 +989,24 @@ class NonLinearTransform(LinearTransformationScene_):
         self.apply_nonlinear_transformation(complex_func)   
 
 
-class Exp(NonLinearTransform):
+class _Exp(NonLinearTransform_):
     def construct(self):
         self.apply_complex_func(lambda z: np.exp(z))
         self.wait()   
 
 
-class Square(NonLinearTransform):
+class Square(NonLinearTransform_):
+    """
+    Показывает пример нелинейного преобразования - возведение в квадрат.
+    """
     def construct(self):
         self.apply_complex_func(lambda z: 0.5*z**2)
         self.wait()  
 
 class LinearTransformExample(LinearTransformationScene_):
+    """
+    Показывает пример преобразования линейного пространства, которое является линейным.
+    """
     def __init__(self, **kwargs):
         LinearTransformationScene_.__init__(
             self,
@@ -1022,8 +1038,8 @@ if __name__ == '__main__':
         "VectorsAsDots",
         "VectorsNDim",
         "VectorScaling",
-        "VectorSum",
-        "VectorSumAround",
+        "VectorSumTriangle",
+        "VectorSumParallelogram",
         "VectorSumScaling",
         "VectorLinearCombine",
         "VectorSumThree",
