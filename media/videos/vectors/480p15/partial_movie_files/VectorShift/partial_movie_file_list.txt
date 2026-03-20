@@ -1,0 +1,10 @@
+# This file is used internally by FFMPEG.
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/VectorShift/311449875_4123421962_223132457.mp4'
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/VectorShift/3498075037_777399359_2331650069.mp4'
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/VectorShift/3498075037_1880026516_1420730951.mp4'
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/VectorShift/3498075037_3332916393_2512411326.mp4'
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/VectorShift/3498075037_3858886506_40374135.mp4'
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/VectorShift/3498075037_3332916393_2841752351.mp4'
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/VectorShift/3498075037_1112323576_1759474163.mp4'
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/VectorShift/3498075037_3332916393_1934848055.mp4'
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/VectorShift/3498075037_2888944041_715107087.mp4'
