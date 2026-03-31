@@ -1,7 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/ScalarMul/1570942879_754792907_3765807625.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/ScalarMul/3874791346_667144672_3428938889.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/ScalarMul/3874791346_1064261771_3495456730.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/ScalarMul/3874791346_667144672_1795888295.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/ScalarMul/3874791346_4086513371_1982374974.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/ScalarMul/3874791346_667144672_3851089032.mp4'

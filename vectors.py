@@ -1,6 +1,7 @@
 import manim as m
 import numpy as np
-from theming import LinearTransformationScene_, Scene_, ThreeDScene_
+from theming import LinearTransformationScene_, Scene_, ThreeDScene_, apply_colors
+from manim_themes.manim_theme import apply_theme
 
 class VectorsExample(Scene_):
     """
@@ -8,21 +9,21 @@ class VectorsExample(Scene_):
     Анимирует несколько векторов на плоскости.
     """
     def construct(self):
-        plane = m.m.NumberPlane()
+        plane = m.NumberPlane()
         self.play(m.Create(plane))
 
         x = m.ValueTracker(1)
         y = m.ValueTracker(2)
 
         vector = m.Vector([1,2])
-        vector.add_updater(lambda m: m.become(m.Vector([
+        vector.add_updater(lambda vec: vec.become(m.Vector([
             int(x.get_value() * 100) / 100, 
             int(y.get_value() * 100) / 100
             ])))
         self.play(m.Create(vector))
 
         label = vector.coordinate_label()
-        label.add_updater(lambda m: m.become(vector.coordinate_label()))
+        label.add_updater(lambda vec: vec.become(vector.coordinate_label()))
         self.play(m.Write(label))
 
         self.play(x.animate.set_value(3), y.animate.set_value(-2))
@@ -33,7 +34,7 @@ class VectorsExample(Scene_):
 
         label.become(vector.coordinate_label(integer_labels=False))
         label.add_updater(
-            lambda m: m.become(vector.coordinate_label(integer_labels=False))
+            lambda vec: vec.become(vector.coordinate_label(integer_labels=False))
             )
         self.wait(0.5)
 
@@ -161,7 +162,7 @@ class VectorsNDim(ThreeDScene_):
         z = m.ValueTracker(0)
 
         vector = m.Vector([3,0])
-        vector.add_updater(lambda m: m.become(m.Vector([
+        vector.add_updater(lambda vec: vec.become(m.Vector([
             x.get_value(),
             y.get_value(),
             z.get_value()
@@ -169,7 +170,7 @@ class VectorsNDim(ThreeDScene_):
         self.play(m.Create(vector))
 
         label = vector.coordinate_label(n_dim=1)
-        label.add_updater(lambda m: m.become(vector.coordinate_label(n_dim=1)))
+        label.add_updater(lambda vec: vec.become(vector.coordinate_label(n_dim=1)))
         self.play(m.Write(label))
 
         self.play(x.animate.set_value(-1), y.animate.set_value(0))
@@ -182,7 +183,7 @@ class VectorsNDim(ThreeDScene_):
         self.wait(0.5)
 
         label.become(vector.coordinate_label(n_dim=2))
-        label.add_updater(lambda m: m.become(vector.coordinate_label(n_dim=2)))
+        label.add_updater(lambda vec: vec.become(vector.coordinate_label(n_dim=2)))
         self.wait(0.5)
 
         plane.become(m.NumberPlane())
@@ -198,7 +199,7 @@ class VectorsNDim(ThreeDScene_):
         self.wait(0.5)
 
         label.become(vector.coordinate_label(n_dim=3))
-        label.add_updater(lambda m: m.become(vector.coordinate_label(n_dim=3)))
+        label.add_updater(lambda vec: vec.become(vector.coordinate_label(n_dim=3)))
         self.wait(0.5)
 
         self.move_camera(phi=60 * m.DEGREES, theta=-15 * m.DEGREES, zoom=1, run_time=1.5)
@@ -229,7 +230,7 @@ class _Vectorsd(ThreeDScene_):
         z = m.ValueTracker(0)
 
         vector = m.Vector([3,0])
-        vector.add_updater(lambda m: m.become(m.Vector([
+        vector.add_updater(lambda vec: vec.become(m.Vector([
             x.get_value(),
             y.get_value(),
             z.get_value()
@@ -237,14 +238,14 @@ class _Vectorsd(ThreeDScene_):
         self.play(m.Create(vector))
 
         label = vector.coordinate_label(n_dim=1)
-        label.add_updater(lambda m: m.become(vector.coordinate_label(n_dim=1)))
+        label.add_updater(lambda vec: vec.become(vector.coordinate_label(n_dim=1)))
         self.play(m.Write(label))
 
         plane.become(m.ThreeDAxes())
         self.wait(0.5)
 
         label.become(vector.coordinate_label(n_dim=3))
-        label.add_updater(lambda m: m.become(vector.coordinate_label(n_dim=3)))
+        label.add_updater(lambda vec: vec.become(vector.coordinate_label(n_dim=3)))
         self.wait(0.5)
 
         self.move_camera(phi=60 * m.DEGREES, theta=-15 * m.DEGREES, zoom=1, run_time=1.5)
@@ -1033,19 +1034,19 @@ if __name__ == '__main__':
     from pathlib import Path
 
     SCENES = [
-        "VectorsExample",
-        "VectorShift",
-        "VectorsAsDots",
-        "VectorsNDim",
-        "VectorScaling",
-        "VectorSumTriangle",
-        "VectorSumParallelogram",
-        "VectorSumScaling",
-        "VectorLinearCombine",
-        "VectorSumThree",
-        "VectorBasis",
-        "VectorLinearCombineCollinear",
-        "VectorLinearCombine23D",
+        # "VectorsExample",
+        # "VectorShift",
+        # "VectorsAsDots",
+        # "VectorsNDim",
+        # "VectorScaling",
+        # "VectorSumTriangle",
+        # "VectorSumParallelogram",
+        # "VectorSumScaling",
+        # "VectorLinearCombine",
+        # "VectorSumThree",
+        # "VectorBasis",
+        # "VectorLinearCombineCollinear",
+        # "VectorLinearCombine23D",
         "AddFunction",
         "AddNotLinear",
         "Square",
@@ -1054,5 +1055,5 @@ if __name__ == '__main__':
     file_path = Path(__file__).resolve()
 
     for SCENE in SCENES:
-        os.system(f"manim {Path(__file__).resolve()} {SCENE} -fqh")
+        os.system(f"manim {Path(__file__).resolve()} {SCENE} -qh")
         os.system(f"manim {Path(__file__).resolve()} {SCENE} -s")

@@ -1,9 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT2d21dreversed/1570942879_2451016475_2645081472.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT2d21dreversed/3874791346_667144672_2578241348.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT2d21dreversed/3874791346_966335795_617884491.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT2d21dreversed/3874791346_3397214263_4126282994.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT2d21dreversed/3874791346_667144672_1948031783.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT2d21dreversed/3874791346_4201802772_813069376.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT2d21dreversed/3874791346_2971714312_1213073686.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LT2d21dreversed/3874791346_4247107814_3404529956.mp4'

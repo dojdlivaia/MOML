@@ -1,6 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LinearTransformExample/1570942879_4028726318_871374553.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LinearTransformExample/3874791346_212750015_4108816643.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LinearTransformExample/3874791346_667144672_613394832.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LinearTransformExample/3874791346_1244984094_3994624796.mp4'
-file 'file:/home/koroteeev/projects/my-project/media/videos/matricies/480p60/partial_movie_files/LinearTransformExample/3874791346_667144672_1250987175.mp4'

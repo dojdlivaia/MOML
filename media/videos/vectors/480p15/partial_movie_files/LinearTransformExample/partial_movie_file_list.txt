@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/LinearTransformExample/4274321126_4071578455_825860812.mp4'
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/LinearTransformExample/2876335715_204681480_2650602559.mp4'
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/LinearTransformExample/2876335715_3359216632_583925212.mp4'
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/480p15/partial_movie_files/LinearTransformExample/2876335715_204681480_3313494366.mp4'

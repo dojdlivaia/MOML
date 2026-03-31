@@ -1,5 +1,4 @@
-from manim import *
-import manium as m
+import manim as m
 import numpy as np
 from math import sin, ceil
 from theming import LinearTransformationScene_, ThreeDScene_
@@ -349,14 +348,14 @@ class Crazy(NonLinearTransform):
 
 class LT3D(ThreeDScene_):
     def create_matrix(self, np_matrix):
-        m = m.Matrix(np_matrix)
+        mat = m.Matrix(np_matrix)
 
-        m.scale(0.75)
-        m.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
+        mat.scale(0.75)
+        mat.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
 
-        m.to_corner(m.UP + m.LEFT,buff=0.5)
+        mat.to_corner(m.UP + m.LEFT,buff=0.5)
 
-        return m
+        return mat
 
     def construct(self):
 
@@ -436,16 +435,16 @@ class LT3D(ThreeDScene_):
         self.wait(7)
 
 
-class LT3D_scale1(m.ThreeDScene):
+class LT3D_scale1(ThreeDScene_):
     def create_matrix(self, np_matrix):
-        m = m.Matrix(np_matrix)
+        mat = m.Matrix(np_matrix)
 
-        m.scale(0.75)
-        m.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
+        mat.scale(0.75)
+        mat.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
 
-        m.to_corner(m.UP + m.LEFT,buff=0.5)
+        mat.to_corner(m.UP + m.LEFT,buff=0.5)
 
-        return m
+        return mat
 
     def construct(self):
 
@@ -525,16 +524,16 @@ class LT3D_scale1(m.ThreeDScene):
         self.wait(7)
 
 
-class LT3D_scale2(m.ThreeDScene):
+class LT3D_scale2(ThreeDScene_):
     def create_matrix(self, np_matrix):
-        m = m.Matrix(np_matrix)
+        mat = m.Matrix(np_matrix)
 
-        m.scale(0.75)
-        m.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
+        mat.scale(0.75)
+        mat.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
 
-        m.to_corner(m.UP + m.LEFT,buff=0.5)
+        mat.to_corner(m.UP + m.LEFT,buff=0.5)
 
-        return m
+        return mat
 
     def construct(self):
 
@@ -614,16 +613,16 @@ class LT3D_scale2(m.ThreeDScene):
         self.wait(7)
 
 
-class LT3D_scale2_down(m.ThreeDScene):
+class LT3D_scale2_down(ThreeDScene_):
     def create_matrix(self, np_matrix):
-        m = m.Matrix(np_matrix)
+        mat = m.Matrix(np_matrix)
 
-        m.scale(0.75)
-        m.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
+        mat.scale(0.75)
+        mat.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
 
-        m.to_corner(m.UP + m.LEFT,buff=0.5)
+        mat.to_corner(m.UP + m.LEFT,buff=0.5)
 
-        return m
+        return mat
 
     def construct(self):
 
@@ -703,16 +702,16 @@ class LT3D_scale2_down(m.ThreeDScene):
         self.wait(7)
 
 
-class LT3D_scale2_reversed(m.ThreeDScene):
+class LT3D_scale2_reversed(ThreeDScene_):
     def create_matrix(self, np_matrix):
-        m = m.Matrix(np_matrix)
+        mat = m.Matrix(np_matrix)
 
-        m.scale(0.75)
-        m.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
+        mat.scale(0.75)
+        mat.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
 
-        m.to_corner(m.UP + m.LEFT,buff=0.5)
+        mat.to_corner(m.UP + m.LEFT,buff=0.5)
 
-        return m
+        return mat
 
     def construct(self):
 
@@ -722,7 +721,7 @@ class LT3D_scale2_reversed(m.ThreeDScene):
         self.basis_j_color = m.RED,
         self.basis_k_color = m.GOLD
 
-        M = np.array([
+        Mat = np.array([
             [2, 0, 0],
             [0, 1, 0],
             [0, 0, -1.5]
@@ -745,7 +744,7 @@ class LT3D_scale2_reversed(m.ThreeDScene):
         self.add_fixed_in_frame_mobjects(basis_vector_helper)
 
         # matrix
-        matrix = self.create_matrix(M)
+        matrix = self.create_matrix(Mat)
 
         self.add_fixed_in_frame_mobjects(matrix)
 
@@ -761,9 +760,9 @@ class LT3D_scale2_reversed(m.ThreeDScene):
         j_vec = m.Vector(np.array([0, 1, 0]), color=self.basis_j_color)
         k_vec = m.Vector(np.array([0, 0, 1]), color=self.basis_k_color)
 
-        i_vec_new = m.Vector(M @ np.array([1, 0, 0]), color=self.basis_i_color)
-        j_vec_new = m.Vector(M @ np.array([0, 1, 0]), color=self.basis_j_color)
-        k_vec_new = m.Vector(M @ np.array([0, 0, 1]), color=self.basis_k_color)
+        i_vec_new = m.Vector(Mat @ np.array([1, 0, 0]), color=self.basis_i_color)
+        j_vec_new = m.Vector(Mat @ np.array([0, 1, 0]), color=self.basis_j_color)
+        k_vec_new = m.Vector(Mat @ np.array([0, 0, 1]), color=self.basis_k_color)
 
         self.play(
             m.Create(cube),
@@ -775,7 +774,7 @@ class LT3D_scale2_reversed(m.ThreeDScene):
 
         self.wait()
 
-        matrix_anim = m.ApplyMatrix(M, cube)
+        matrix_anim = m.ApplyMatrix(Mat, cube)
 
         self.play(
             matrix_anim,
@@ -792,16 +791,16 @@ class LT3D_scale2_reversed(m.ThreeDScene):
         self.wait(7)
 
 
-class LT3D_Shift(m.ThreeDScene):
+class LT3D_Shift(ThreeDScene_):
     def create_matrix(self, np_matrix):
-        m = m.Matrix(np_matrix)
+        mat = mat.Matrix(np_matrix)
 
-        m.scale(0.75)
-        m.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
+        mat.scale(0.75)
+        mat.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
 
-        m.to_corner(m.UP + m.LEFT,buff=0.5)
+        mat.to_corner(m.UP + m.LEFT,buff=0.5)
 
-        return m
+        return mat
 
     def construct(self):
 
@@ -811,7 +810,7 @@ class LT3D_Shift(m.ThreeDScene):
         self.basis_j_color = m.RED,
         self.basis_k_color = m.GOLD
 
-        M = np.array([
+        Mat = np.array([
             [0, 0, 1],
             [1, 0, 0],
             [0, 1, 0]
@@ -834,7 +833,7 @@ class LT3D_Shift(m.ThreeDScene):
         self.add_fixed_in_frame_mobjects(basis_vector_helper)
 
         # matrix
-        matrix = self.create_matrix(M)
+        matrix = self.create_matrix(Mat)
 
         self.add_fixed_in_frame_mobjects(matrix)
 
@@ -850,9 +849,9 @@ class LT3D_Shift(m.ThreeDScene):
         j_vec = m.Vector(np.array([0, 1, 0]), color=self.basis_j_color)
         k_vec = m.Vector(np.array([0, 0, 1]), color=self.basis_k_color)
 
-        i_vec_new = m.Vector(M @ np.array([1, 0, 0]), color=self.basis_i_color)
-        j_vec_new = m.Vector(M @ np.array([0, 1, 0]), color=self.basis_j_color)
-        k_vec_new = m.Vector(M @ np.array([0, 0, 1]), color=self.basis_k_color)
+        i_vec_new = m.Vector(Mat @ np.array([1, 0, 0]), color=self.basis_i_color)
+        j_vec_new = m.Vector(Mat @ np.array([0, 1, 0]), color=self.basis_j_color)
+        k_vec_new = m.Vector(Mat @ np.array([0, 0, 1]), color=self.basis_k_color)
 
         self.play(
             m.Create(cube),
@@ -864,7 +863,7 @@ class LT3D_Shift(m.ThreeDScene):
 
         self.wait()
 
-        matrix_anim = m.ApplyMatrix(M, cube)
+        matrix_anim = m.ApplyMatrix(Mat, cube)
 
         self.play(
             matrix_anim,
@@ -881,16 +880,16 @@ class LT3D_Shift(m.ThreeDScene):
         self.wait(7)
 
 
-class LT3D_Upper(m.ThreeDScene):
+class LT3D_Upper(ThreeDScene_):
     def create_matrix(self, np_matrix):
-        m = m.Matrix(np_matrix)
+        mat = m.Matrix(np_matrix)
 
-        m.scale(0.75)
-        m.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
+        mat.scale(0.75)
+        mat.set_column_colors(self.basis_i_color, self.basis_j_color, self.basis_k_color)
 
-        m.to_corner(m.UP + m.LEFT,buff=0.5)
+        mat.to_corner(m.UP + m.LEFT,buff=0.5)
 
-        return m
+        return mat
 
     def construct(self):
 
@@ -900,7 +899,7 @@ class LT3D_Upper(m.ThreeDScene):
         self.basis_j_color = m.RED,
         self.basis_k_color = m.GOLD
 
-        M = np.array([
+        Mat = np.array([
             [1, -1, 1],
             [0, 1, 1],
             [0, 0, 1]
@@ -923,7 +922,7 @@ class LT3D_Upper(m.ThreeDScene):
         self.add_fixed_in_frame_mobjects(basis_vector_helper)
 
         # matrix
-        matrix = self.create_matrix(M)
+        matrix = self.create_matrix(Mat)
 
         self.add_fixed_in_frame_mobjects(matrix)
 
@@ -939,9 +938,9 @@ class LT3D_Upper(m.ThreeDScene):
         j_vec = m.Vector(np.array([0, 1, 0]), color=self.basis_j_color)
         k_vec = m.Vector(np.array([0, 0, 1]), color=self.basis_k_color)
 
-        i_vec_new = m.Vector(M @ np.array([1, 0, 0]), color=self.basis_i_color)
-        j_vec_new = m.Vector(M @ np.array([0, 1, 0]), color=self.basis_j_color)
-        k_vec_new = m.Vector(M @ np.array([0, 0, 1]), color=self.basis_k_color)
+        i_vec_new = m.Vector(Mat @ np.array([1, 0, 0]), color=self.basis_i_color)
+        j_vec_new = m.Vector(Mat @ np.array([0, 1, 0]), color=self.basis_j_color)
+        k_vec_new = m.Vector(Mat @ np.array([0, 0, 1]), color=self.basis_k_color)
 
         self.play(
             m.Create(cube),
@@ -953,7 +952,7 @@ class LT3D_Upper(m.ThreeDScene):
 
         self.wait()
 
-        matrix_anim = m.ApplyMatrix(M, cube)
+        matrix_anim = m.ApplyMatrix(Mat, cube)
 
         self.play(
             matrix_anim,
@@ -970,7 +969,7 @@ class LT3D_Upper(m.ThreeDScene):
         self.wait(7)
 
 
-class LT3d22d(m.ThreeDScene):
+class LT3d22d(ThreeDScene_):
     def create_matrix(self, np_matrix):
         m = m.Matrix(np_matrix[:2,:])
 
@@ -989,7 +988,7 @@ class LT3d22d(m.ThreeDScene):
         self.basis_j_color = m.RED,
         self.basis_k_color = m.GOLD
 
-        M = np.array([
+        Mat = np.array([
             [2, 2, -1],
             [-2, 1, 2],
             [0, 0, 0]
@@ -1012,7 +1011,7 @@ class LT3d22d(m.ThreeDScene):
         self.add_fixed_in_frame_mobjects(basis_vector_helper)
 
         # matrix
-        matrix = self.create_matrix(M)
+        matrix = self.create_matrix(Mat)
         times = m.Tex(r"$\times$").scale(0.75).next_to(matrix, m.RIGHT)
         vector = m.Matrix(np.array([[1, 1, 1]]).T)
         vector.scale(0.75)
@@ -1032,10 +1031,10 @@ class LT3d22d(m.ThreeDScene):
         k_vec = m.Vector(np.array([0, 0, 1]), color=self.basis_k_color)
         x_vec = m.Vector(np.array([1, 1, 1]), color=m.WHITE)
 
-        i_vec_new = m.Vector(M @ np.array([1, 0, 0]), color=self.basis_i_color)
-        j_vec_new = m.Vector(M @ np.array([0, 1, 0]), color=self.basis_j_color)
-        k_vec_new = m.Vector(M @ np.array([0, 0, 1]), color=self.basis_k_color)
-        x_vec_new = m.Vector(M @ np.array([1, 1, 1]), color=m.WHITE)
+        i_vec_new = m.Vector(Mat @ np.array([1, 0, 0]), color=self.basis_i_color)
+        j_vec_new = m.Vector(Mat @ np.array([0, 1, 0]), color=self.basis_j_color)
+        k_vec_new = m.Vector(Mat @ np.array([0, 0, 1]), color=self.basis_k_color)
+        x_vec_new = m.Vector(Mat @ np.array([1, 1, 1]), color=m.WHITE)
 
         self.play(
             m.GrowArrow(i_vec),
@@ -1061,7 +1060,7 @@ class LT3d22d(m.ThreeDScene):
         self.stop_ambient_camera_rotation()
 
         eq = m.Tex(r"=").scale(0.75).next_to(vector, m.RIGHT)
-        res = (M @ np.array([1, 1, 1]).reshape((-1, 1)))[:2,:]
+        res = (Mat @ np.array([1, 1, 1]).reshape((-1, 1)))[:2,:]
         print(res)
         res = m.Matrix(res).scale(0.75).next_to(eq, m.RIGHT)
         
@@ -1082,7 +1081,7 @@ class LT3d22d(m.ThreeDScene):
         self.wait(1)
 
 
-class LT2d23d(m.ThreeDScene):
+class LT2d23d(ThreeDScene_):
     def create_matrix(self, np_matrix):
         m = m.Matrix(np_matrix[:,:2])
 
@@ -1101,7 +1100,7 @@ class LT2d23d(m.ThreeDScene):
         self.basis_j_color = m.RED,
         self.basis_k_color = m.GOLD
 
-        M = np.array([
+        Mat = np.array([
             [2, 1, 0],
             [-2, 1, 0],
             [2, -1, 0]
@@ -1114,7 +1113,7 @@ class LT2d23d(m.ThreeDScene):
         self.set_camera_orientation(phi=0 * m.DEGREES, theta=-90 * m.DEGREES)
 
         # matrix
-        matrix = self.create_matrix(M)
+        matrix = self.create_matrix(Mat)
         times = m.Tex(r"$\times$").scale(0.75).next_to(matrix, m.RIGHT)
         vector = m.Matrix(np.array([[1, 1]]).T)
         vector.scale(0.75)
@@ -1131,9 +1130,9 @@ class LT2d23d(m.ThreeDScene):
         j_vec = m.Vector(np.array([0, 1, 0]), color=self.basis_j_color)
         x_vec = m.Vector(np.array([1, 1, 0]), color=m.WHITE)
 
-        i_vec_new = m.Vector(M @ np.array([1, 0, 0]), color=self.basis_i_color)
-        j_vec_new = m.Vector(M @ np.array([0, 1, 0]), color=self.basis_j_color)
-        x_vec_new = m.Vector(M @ np.array([1, 1, 0]), color=m.WHITE)
+        i_vec_new = m.Vector(Mat @ np.array([1, 0, 0]), color=self.basis_i_color)
+        j_vec_new = m.Vector(Mat @ np.array([0, 1, 0]), color=self.basis_j_color)
+        x_vec_new = m.Vector(Mat @ np.array([1, 1, 0]), color=m.WHITE)
 
         self.play(
             m.GrowArrow(i_vec),
@@ -1150,7 +1149,7 @@ class LT2d23d(m.ThreeDScene):
         )
 
         eq = m.Tex(r"=").scale(0.75).next_to(vector, m.RIGHT)
-        res = (M @ np.array([1, 1, 1]).reshape((-1, 1)))
+        res = (Mat @ np.array([1, 1, 1]).reshape((-1, 1)))
         print(res)
         res = m.Matrix(res).scale(0.75).next_to(eq, m.RIGHT)
         
@@ -1643,7 +1642,7 @@ if __name__ == '__main__':
         "LT3d22d",
         "LT2d21d",
         "LT2d21dreversed",
-        "MatrixMatrixMul3",
+        "MatrixMatrixMul2",
         "MatrixMatrixMulResult",
         "MatrixMatrixMulNotSymmetrical",
         "LT3D_scale1",
@@ -1654,5 +1653,5 @@ if __name__ == '__main__':
     file_path = Path(__file__).resolve()
 
     for SCENE in SCENES:
-        os.system(f"manim {Path(__file__).resolve()} {SCENE} -fqh")
+        os.system(f"manim {Path(__file__).resolve()} {SCENE} -qh")
         os.system(f"manim {Path(__file__).resolve()} {SCENE} -s")

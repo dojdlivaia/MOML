@@ -1,0 +1,3 @@
+# This file is used internally by FFMPEG.
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/1080p60/partial_movie_files/Square/4238065592_1212872447_825860812.mp4'
+file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/1080p60/partial_movie_files/Square/2889369985_204681480_1170843800.mp4'
