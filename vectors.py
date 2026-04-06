@@ -1032,8 +1032,8 @@ class VectorInTwoBases(Scene_):
     """
     Иллюстрирует один и тот же вектор в двух разных базисах.
     Стандартный базис: d₁, d₂ (ортонормированный)
-    Альтернативный базис: d'₁, d'₂ (не ортонормированный)
-    Вектор A: [2, -32] в стандартном, [0, -2] в новом базисе
+    Альтернативный базис: d'₁, d'₂ 
+    Вектор A: [2, -2] в стандартном, [0, -2] в новом базисе
     """
     def construct(self):
         plane = m.NumberPlane()
@@ -1041,12 +1041,12 @@ class VectorInTwoBases(Scene_):
 
         # СТАНДАРТНЫЙ БАЗИС (серый цвет)
         i_std = m.Vector([1, 0], color=m.GRAY)
-        i_std_label = m.MathTex("\\vec{d}_1", color=m.GRAY).next_to(i_std.get_end(), m.RIGHT)  # ← ИЗМЕНИТЬ
+        i_std_label = m.MathTex("\\vec{d}_1", color=m.GRAY).next_to(i_std.get_end(), m.RIGHT)  
         g_i_std = m.VGroup(i_std, i_std_label)
         self.play(m.Create(g_i_std))
 
         j_std = m.Vector([0, 1], color=m.GRAY)
-        j_std_label = m.MathTex("\\vec{d}_2", color=m.GRAY).next_to(j_std.get_end(), m.UP)  # ← ИЗМЕНИТЬ
+        j_std_label = m.MathTex("\\vec{d}_2", color=m.GRAY).next_to(j_std.get_end(), m.UP)  
         g_j_std = m.VGroup(j_std, j_std_label)
         self.play(m.Create(g_j_std))
 
@@ -1064,22 +1064,22 @@ class VectorInTwoBases(Scene_):
 
         # Координаты в стандартном базисе - серые, длинные скобки 
         coords_std = m.Matrix([["2.0"], ["-2.0"]], left_bracket="[", right_bracket="]", color=m.GRAY)
-        coords_std.scale(0.6).next_to(vec_A.get_end(), m.RIGHT, buff=0.6)
+        coords_std.scale(0.6).next_to(vec_A.get_end(), m.RIGHT, buff=0.7)
         self.play(m.Create(coords_std))
 
-        self.wait(0.5)
+        self.wait(0.6)
 
 
         # АЛЬТЕРНАТИВНЫЙ БАЗИС (золотой цвет)
         # d₁ = [2, 2], d₂ = [-1, 1]
         # НЕ ортонормированный!
-        d1 = m.Vector([2, 2], color=m.GOLD)
-        d1_label = m.MathTex("\\vec{d}'_1", color=m.GOLD).next_to(d1.get_end(), m.UR)
+        d1 = m.Vector([2, 2], color=m.YELLOW)
+        d1_label = m.MathTex("\\vec{d}'_1", color=m.YELLOW).next_to(d1.get_end(), m.UR)
         g_d1 = m.VGroup(d1, d1_label)
         self.play(m.Create(g_d1))
 
-        d2 = m.Vector([-1, 1], color=m.GOLD)
-        d2_label = m.MathTex("\\vec{d}'_2", color=m.GOLD).next_to(d2.get_end(), m.UL)
+        d2 = m.Vector([-1, 1], color=m.YELLOW)
+        d2_label = m.MathTex("\\vec{d}'_2", color=m.YELLOW).next_to(d2.get_end(), m.UL)
         g_d2 = m.VGroup(d2, d2_label)
         self.play(m.Create(g_d2))
 
@@ -1087,15 +1087,418 @@ class VectorInTwoBases(Scene_):
 
 
         # Координаты в новом базисе - золотые, длинные скобки
-        coords_new = m.Matrix([["0"], ["-2.0"]], left_bracket="[", right_bracket="]").set_color(m.GOLD)
+        coords_new = m.Matrix([["0"], ["-2.0"]], left_bracket="[", right_bracket="]").set_color(m.YELLOW)
         coords_new.scale(0.6).next_to(vec_A.get_end(), m.UP, buff=0.6)
         self.play(m.Create(coords_new))
 
-        # Подпись с разложением
-        basis_note = m.MathTex("\\vec{A} = 0\\cdot\\vec{d}_1 + (-3)\\cdot\\vec{d}_2", color=m.GOLD).to_edge(m.DOWN)
-        self.play(m.Create(basis_note))
 
         self.wait(2)
+
+
+
+
+class VectorLength(Scene_):
+    """
+    Иллюстрирует идею длины вектора через прямоугольный треугольник.
+    Строит вектор на координатной плоскости и показывает его длину через 
+    теорему Пифагора.
+    """
+    def construct(self):
+        plane = m.NumberPlane(
+            x_range=[-4, 4, 1],
+            y_range=[-4, 4, 1],
+            background_line_style={
+                "stroke_color": m.GRAY_E,
+                "stroke_width": 1,
+            }
+        )
+        self.play(m.Create(plane), run_time=0.2)
+
+        # Вектор начинается в (-2, -2) и заканчивается в (1, 2)
+        # Длина вектора: [3, 4] как и требуется
+        start_point = np.array([-2, -2, 0])
+
+        v = m.Vector([3, 4], color=m.PURPLE).shift(start_point)
+        #v_label = m.MathTex("\\vec{v}", color=m.PURPLE).next_to(v.get_end(), m.UR, buff=0.2)
+        g_v = m.VGroup(v)
+        self.play(m.Create(g_v))
+
+        self.wait(0.3)
+
+        # Координаты вектора - серые длинные скобки
+        coords_v = m.Matrix([["3.0"], ["4.0"]], left_bracket="[", right_bracket="]").set_color(m.GRAY)
+        coords_v.scale(0.5).next_to(v.get_end(), m.RIGHT, buff=0.3)
+        self.play(m.Create(coords_v))
+
+        self.wait(0.3)
+
+        # Катеты треугольника - тёмно-серый пунктир 
+        leg_x = m.DashedLine(
+            start=start_point, 
+            end=start_point + np.array([3, 0, 0]), 
+            color=m.DARK_GRAY, 
+            stroke_width=4,
+            dash_length=0.2
+        )
+        leg_x_label = m.MathTex("3", color=m.DARK_GRAY).next_to(leg_x, m.DOWN, buff=0.2)
+        g_leg_x = m.VGroup(leg_x, leg_x_label)
+        self.play(m.Create(g_leg_x))
+
+        leg_y = m.DashedLine(
+            start=start_point + np.array([3, 0, 0]), 
+            end=start_point + np.array([3, 4, 0]), 
+            color=m.DARK_GRAY, 
+            stroke_width=4,
+            dash_length=0.2
+        )
+        leg_y_label = m.MathTex("4", color=m.DARK_GRAY).next_to(leg_y, m.RIGHT, buff=0.2)
+        g_leg_y = m.VGroup(leg_y, leg_y_label)
+        self.play(m.Create(g_leg_y))
+
+        self.wait(0.3)
+
+        # Длина вектора 
+        length_label = m.MathTex("|\\vec{v}| = 5", color=m.DARK_GRAY).next_to(v.get_midpoint(), m.LEFT, buff=0.5)
+        self.play(m.Create(length_label))
+
+        self.wait(0.3)
+
+        # Формула длины вектора - компактная
+        length_formula = m.MathTex(
+            "|\\vec{v}| = \\sqrt{3^2 + 4^2} = \\sqrt{25} = 5",
+            color=m.DARK_GRAY
+        ).scale(0.7).to_edge(m.DOWN, buff=0.9)
+        self.play(m.Create(length_formula))
+
+        self.wait(2)
+
+class VectorDifference(Scene_):
+    """
+    Иллюстрирует операцию вычитания векторов.
+    Строит два вектора на координатной плоскости и показывает их разность 
+    как вектор, соединяющий их концы.
+    """
+    def construct(self):
+        plane = m.NumberPlane(
+            x_range=[-4, 4, 1],
+            y_range=[-4, 4, 1],
+            background_line_style={
+                "stroke_color": m.GRAY_E,
+                "stroke_width": 1,
+            }
+        )
+        self.play(m.Create(plane), run_time=0.2)
+
+        # Начало векторов
+        start_point = np.array([-1, -1, 0])
+
+        # Первый вектор a = [3, 2] (серый)
+        a = m.Vector([3, 2], color=m.GRAY).shift(start_point)
+        a_label = m.MathTex("\\vec{a}", color=m.GRAY).next_to(a.get_end(), m.UR, buff=0.2)
+        g_a = m.VGroup(a, a_label)
+        self.play(m.Create(g_a))
+
+        # Координаты вектора a
+        coords_a = m.Matrix([["3.0"], ["2.0"]], left_bracket="[", right_bracket="]").set_color(m.GRAY)
+        coords_a.scale(0.5).next_to(a.get_end(), m.RIGHT, buff=0.45)
+        self.play(m.Create(coords_a))
+
+        self.wait(0.3)
+
+        # Второй вектор b = [1, 3] (серый)
+        b = m.Vector([1, 3], color=m.GRAY).shift(start_point)
+        b_label = m.MathTex("\\vec{b}", color=m.GRAY).next_to(b.get_end(), m.UL, buff=0.2)
+        g_b = m.VGroup(b, b_label)
+        self.play(m.Create(g_b))
+
+        # Координаты вектора b
+        coords_b = m.Matrix([["1.0"], ["3.0"]], left_bracket="[", right_bracket="]").set_color(m.GRAY)
+        coords_b.scale(0.5).next_to(b.get_end(), m.LEFT, buff=0.45)
+        self.play(m.Create(coords_b))
+
+        self.wait(0.3)
+
+        # Разность векторов a - b = [2, -1] (фиолетовый ВЕКТОР с направлением!)
+        diff_vector = m.Vector([2, -1], color=m.PURPLE).shift(start_point + np.array([1, 3, 0]))
+        self.play(m.Create(diff_vector))
+
+        # Вычисляем середину вручную через numpy
+        diff_midpoint = (start_point + np.array([1, 3, 0]) + start_point + np.array([3, 2, 0])) / 2
+        diff_label = m.MathTex("\\vec{a} - \\vec{b}", color=m.PURPLE).move_to(diff_midpoint + np.array([0.0, -0.3, 0]))
+        self.play(m.Create(diff_label))
+
+        self.wait(0.3)
+
+        # Координаты разности
+        coords_diff = m.Matrix([["2.0"], ["-1.0"]], left_bracket="[", right_bracket="]").set_color(m.PURPLE)
+        coords_diff.scale(0.5).move_to(diff_midpoint + np.array([0.8, 0.5, 0]))
+        self.play(m.Create(coords_diff))
+
+        self.wait(0.3)
+
+        # Подпись "расстояние между векторами"
+        distance_note = m.Text(
+            "расстояние между векторами",
+            color=m.DARK_GRAY,
+            font_size=24
+        ).to_edge(m.DOWN, buff=0.5)
+        self.play(m.Create(distance_note))
+
+        self.wait(2)
+
+class ScalarProduct(Scene_):
+    """
+    Иллюстрирует скалярное произведение векторов.
+    Строит два вектора на координатной плоскости и показывает угол между ними.
+    """
+    def construct(self):
+        plane = m.NumberPlane(
+            x_range=[-4, 4, 1],
+            y_range=[-4, 4, 1],
+            background_line_style={
+                "stroke_color": m.GRAY_E,
+                "stroke_width": 1,
+            }
+        )
+        self.play(m.Create(plane), run_time=0.2)
+
+        # Начало векторов
+        start_point = np.array([-1, -1, 0])
+
+        # Первый вектор a = [3, 1] (фиолетовый)
+        a = m.Vector([3, 1], color=m.PURPLE).shift(start_point)
+        a_label = m.MathTex("\\vec{a}", color=m.PURPLE).next_to(a.get_end(), m.UR, buff=0.2)
+        g_a = m.VGroup(a, a_label)
+        self.play(m.Create(g_a))
+
+        # Координаты вектора a
+        coords_a = m.Matrix([["3.0"], ["1.0"]], left_bracket="[", right_bracket="]").set_color(m.GRAY)
+        coords_a.scale(0.5).next_to(a.get_end(), m.RIGHT, buff=0.45)
+        self.play(m.Create(coords_a))
+
+        self.wait(0.3)
+
+        # Второй вектор b = [1, 2] (фиолетовый)
+        b = m.Vector([1, 2], color=m.PURPLE).shift(start_point)
+        b_label = m.MathTex("\\vec{b}", color=m.PURPLE).next_to(b.get_end(), m.UL, buff=0.2)
+        g_b = m.VGroup(b, b_label)
+        self.play(m.Create(g_b))
+
+        # Координаты вектора b
+        coords_b = m.Matrix([["1.0"], ["2.0"]], left_bracket="[", right_bracket="]").set_color(m.GRAY)
+        coords_b.scale(0.5).next_to(b.get_end(), m.LEFT, buff=0.45)
+        self.play(m.Create(coords_b))
+
+        self.wait(0.3)
+
+        # Угол между векторами φ (дуга)
+        angle_arc = m.Arc(
+            radius=0.8,
+            start_angle=np.arctan2(1, 3),
+            angle=np.arctan2(2, 1) - np.arctan2(1, 3),
+            color=m.DARK_GRAY,
+            stroke_width=3
+        ).shift(start_point)
+        self.play(m.Create(angle_arc))
+
+        # Подпись угла φ
+        phi_label = m.MathTex("\\varphi", color=m.DARK_GRAY).scale(0.7)
+        phi_angle = (np.arctan2(1, 3) + np.arctan2(2, 1)) / 2
+        phi_label.move_to(start_point + np.array([
+            1.2 * np.cos(phi_angle),
+            1.2 * np.sin(phi_angle),
+            0
+        ]))
+        self.play(m.Create(phi_label))
+
+        self.wait(0.3)
+
+        # Формула скалярного произведения
+        dot_product_formula = m.MathTex(
+            "\\vec{a} \\cdot \\vec{b} = |\\vec{a}| \\cdot |\\vec{b}| \\cdot \\cos\\varphi",
+            color=m.DARK_GRAY
+        ).scale(0.7).to_edge(m.DOWN, buff=2.0)
+        self.play(m.Create(dot_product_formula))
+
+        self.wait(2)
+
+
+class OrthogonalVectors(Scene_):
+    """
+    Иллюстрирует ортогональные векторы.
+    Строит два перпендикулярных вектора и показывает, что их скалярное 
+    произведение равно нулю.
+    """
+    def construct(self):
+        plane = m.NumberPlane(
+            x_range=[-4, 4, 1],
+            y_range=[-4, 4, 1],
+            background_line_style={
+                "stroke_color": m.GRAY_E,
+                "stroke_width": 1,
+            }
+        )
+        self.play(m.Create(plane), run_time=0.2)
+
+        # Начало векторов
+        start_point = np.array([-1, -1, 0])
+
+        # Первый вектор a = [3, 0] (фиолетовый, горизонтальный)
+        a = m.Vector([3, 0], color=m.PURPLE).shift(start_point)
+        a_label = m.MathTex("\\vec{a}", color=m.PURPLE).next_to(a.get_end(), m.RIGHT, buff=0.2)
+        g_a = m.VGroup(a, a_label)
+        self.play(m.Create(g_a))
+
+        # Координаты вектора a
+        coords_a = m.Matrix([["3.0"], ["0.0"]], left_bracket="[", right_bracket="]").set_color(m.GRAY)
+        coords_a.scale(0.5).next_to(a.get_end(), m.RIGHT, buff=0.55)
+        self.play(m.Create(coords_a))
+
+        self.wait(0.3)
+
+        # Второй вектор b = [0, 2] (фиолетовый, вертикальный)
+        b = m.Vector([0, 2], color=m.PURPLE).shift(start_point)
+        b_label = m.MathTex("\\vec{b}", color=m.PURPLE).next_to(b.get_end(), m.UP, buff=0.2)
+        g_b = m.VGroup(b, b_label)
+        self.play(m.Create(g_b))
+
+        # Координаты вектора b
+        coords_b = m.Matrix([["0.0"], ["2.0"]], left_bracket="[", right_bracket="]").set_color(m.GRAY)
+        coords_b.scale(0.5).next_to(b.get_end(), m.RIGHT, buff=0.45)
+        self.play(m.Create(coords_b))
+
+        self.wait(0.3)
+
+        # Прямой угол между векторами (квадратик в углу) - рисуем вручную
+        right_angle_line1 = m.Line(
+            start=start_point + np.array([0.4, 0, 0]),
+            end=start_point + np.array([0.4, 0.4, 0]),
+            color=m.DARK_GRAY,
+            stroke_width=3
+        )
+        right_angle_line2 = m.Line(
+            start=start_point + np.array([0, 0.4, 0]),
+            end=start_point + np.array([0.4, 0.4, 0]),
+            color=m.DARK_GRAY,
+            stroke_width=3
+        )
+        right_angle = m.VGroup(right_angle_line1, right_angle_line2)
+        self.play(m.Create(right_angle))
+
+        self.wait(0.3)
+
+        # Подпись "ортогональные: скалярное произведение = 0"
+        orthogonal_note = m.Text(
+            "ортогональные: скалярное произведение = 0",
+            color=m.DARK_GRAY,
+            font_size=24
+        ).to_edge(m.UP, buff=0.8)
+        self.play(m.Create(orthogonal_note))
+
+        self.wait(0.3)
+
+        # Формула скалярного произведения
+        dot_product_formula = m.MathTex(
+            "\\vec{a} \\cdot \\vec{b} = 3 \\cdot 0 + 0 \\cdot 2 = 0",
+            color=m.DARK_GRAY
+        ).scale(0.7).next_to(orthogonal_note, m.DOWN, buff=0.3)
+        self.play(m.Create(dot_product_formula))
+
+        self.wait(2)
+
+class VectorProjection(Scene_):
+    """
+    Иллюстрирует проекцию вектора на другой вектор.
+    Показывает связь скалярного произведения с длиной проекции.
+    """
+    def construct(self):
+        plane = m.NumberPlane(
+            x_range=[-4, 4, 1],
+            y_range=[-4, 4, 1],
+            background_line_style={
+                "stroke_color": m.GRAY_E,
+                "stroke_width": 1,
+            }
+        )
+        self.play(m.Create(plane), run_time=0.2)
+
+        # Начало векторов
+        start_point = np.array([-2, -1, 0])
+
+        # Вектор b = [4, 0] (горизонтальный, СЕРЫЙ - это ось проекции)
+        b = m.Vector([4, 0], color=m.GRAY).shift(start_point)
+        b_label = m.MathTex("\\vec{b}", color=m.GRAY).next_to(b.get_end(), m.RIGHT, buff=0.2)
+        g_b = m.VGroup(b, b_label)
+        self.play(m.Create(g_b))
+
+        # Координаты вектора b
+        coords_b = m.Matrix([["4.0"], ["0.0"]], left_bracket="[", right_bracket="]").set_color(m.GRAY)
+        coords_b.scale(0.5).next_to(b.get_end(), m.RIGHT, buff=0.45)
+        self.play(m.Create(coords_b))
+
+        self.wait(0.3)
+
+        # Вектор a = [3, 2] (под углом, ФИОЛЕТОВЫЙ)
+        a = m.Vector([3, 2], color=m.PURPLE).shift(start_point)
+        a_label = m.MathTex("\\vec{a}", color=m.PURPLE).next_to(a.get_end(), m.UR, buff=0.2)
+        g_a = m.VGroup(a, a_label)
+        self.play(m.Create(g_a))
+
+        # Координаты вектора a
+        coords_a = m.Matrix([["3.0"], ["2.0"]], left_bracket="[", right_bracket="]").set_color(m.GRAY)
+        coords_a.scale(0.5).next_to(a.get_end(), m.RIGHT, buff=0.45)
+        self.play(m.Create(coords_a))
+
+        self.wait(0.3)
+
+        # Проекция вектора a на вектор b (СПЛОШНАЯ серо-фиолетовая линия)
+        # Проекция = [3, 0] (только x-компонента)
+        proj = m.Line(
+            start=start_point,
+            end=start_point + np.array([3, 0, 0]),
+            color=m.PURPLE,
+            stroke_width=5,
+            stroke_opacity=0.6
+        )
+        self.play(m.Create(proj))
+
+        # Перпендикуляр от конца a к проекции (ТОЛСТЫЙ фиолетовый пунктир)
+        perp = m.DashedLine(
+            start=start_point + np.array([3, 0, 0]),
+            end=start_point + np.array([3, 2, 0]),
+            color=m.PURPLE,
+            stroke_width=5,
+            dash_length=0.15
+        )
+        self.play(m.Create(perp))
+
+        self.wait(0.3)
+
+        # Подпись длины проекции (фиолетовая)
+        proj_label = m.MathTex("|\\vec{a}_b| = 3", color=m.PURPLE).next_to(proj, m.DOWN, buff=0.3)
+        self.play(m.Create(proj_label))
+
+        self.wait(0.3)
+
+        # Формула скалярного произведения через проекцию
+        dot_product_formula = m.MathTex(
+            "\\vec{a} \\cdot \\vec{b} = |\\vec{b}| \\cdot |\\vec{a}_b| = 4 \\cdot 3 = 12",
+            color=m.DARK_GRAY
+        ).scale(0.7).to_edge(m.DOWN, buff=0.5)
+        self.play(m.Create(dot_product_formula))
+
+        self.wait(0.3)
+
+        # Альтернативная формула через cos
+        cos_formula = m.MathTex(
+            "\\vec{a} \\cdot \\vec{b} = |\\vec{a}| \\cdot |\\vec{b}| \\cdot \\cos\\varphi",
+            color=m.DARK_GRAY
+        ).scale(0.7).next_to(dot_product_formula, m.UP, buff=0.3)
+        self.play(m.Create(cos_formula))
+
+        self.wait(2)
+        
+
 
 if __name__ == '__main__':
     import subprocess
@@ -1108,7 +1511,7 @@ if __name__ == '__main__':
         # "VectorsNDim",
         # "VectorScaling",
         # "VectorSumTriangle",
-        # "VectorSumParallelogram",
+        #"VectorSumParallelogram",
         # "VectorSumScaling",
         # "VectorLinearCombine",
         # "VectorSumThree",
@@ -1119,8 +1522,12 @@ if __name__ == '__main__':
         #"AddNotLinear",
         #"Square",
         #"LinearTransformExample",
-        "VectorInTwoBases",
-        #"VectorInTwoBasesSimple",
+        #"VectorInTwoBases",
+        #"VectorLength",
+        #"VectorDifference",
+        #"ScalarProduct",
+        #"OrthogonalVectors",
+        "VectorProjection",
   
     ]
     file_path = Path(__file__).resolve()
