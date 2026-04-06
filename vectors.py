@@ -1028,9 +1028,77 @@ class LinearTransformExample(LinearTransformationScene_):
         self.apply_inverse(matrix)
         self.wait()
 
+class VectorInTwoBases(Scene_):
+    """
+    Иллюстрирует один и тот же вектор в двух разных базисах.
+    Стандартный базис: d₁, d₂ (ортонормированный)
+    Альтернативный базис: d'₁, d'₂ (не ортонормированный)
+    Вектор A: [2, -32] в стандартном, [0, -2] в новом базисе
+    """
+    def construct(self):
+        plane = m.NumberPlane()
+        self.play(m.Create(plane), run_time=0.2)
+
+        # СТАНДАРТНЫЙ БАЗИС (серый цвет)
+        i_std = m.Vector([1, 0], color=m.GRAY)
+        i_std_label = m.MathTex("\\vec{d}_1", color=m.GRAY).next_to(i_std.get_end(), m.RIGHT)  # ← ИЗМЕНИТЬ
+        g_i_std = m.VGroup(i_std, i_std_label)
+        self.play(m.Create(g_i_std))
+
+        j_std = m.Vector([0, 1], color=m.GRAY)
+        j_std_label = m.MathTex("\\vec{d}_2", color=m.GRAY).next_to(j_std.get_end(), m.UP)  # ← ИЗМЕНИТЬ
+        g_j_std = m.VGroup(j_std, j_std_label)
+        self.play(m.Create(g_j_std))
+
+
+        self.wait(0.3)
+
+        # ВЕКТОР A в стандартном базисе (фиолетовый)
+        # Координаты: [2, -2]
+        vec_A = m.Vector([2, -2], color=m.PURPLE)
+        vec_A_label = m.MathTex("\\vec{A}", color=m.PURPLE).next_to(vec_A.get_end(), m.DR)
+        g_vec_A = m.VGroup(vec_A, vec_A_label)
+        self.play(m.Create(g_vec_A))
+
+        self.wait(0.3)
+
+        # Координаты в стандартном базисе - серые, длинные скобки 
+        coords_std = m.Matrix([["2.0"], ["-2.0"]], left_bracket="[", right_bracket="]", color=m.GRAY)
+        coords_std.scale(0.6).next_to(vec_A.get_end(), m.RIGHT, buff=0.6)
+        self.play(m.Create(coords_std))
+
+        self.wait(0.5)
+
+
+        # АЛЬТЕРНАТИВНЫЙ БАЗИС (золотой цвет)
+        # d₁ = [2, 2], d₂ = [-1, 1]
+        # НЕ ортонормированный!
+        d1 = m.Vector([2, 2], color=m.GOLD)
+        d1_label = m.MathTex("\\vec{d}'_1", color=m.GOLD).next_to(d1.get_end(), m.UR)
+        g_d1 = m.VGroup(d1, d1_label)
+        self.play(m.Create(g_d1))
+
+        d2 = m.Vector([-1, 1], color=m.GOLD)
+        d2_label = m.MathTex("\\vec{d}'_2", color=m.GOLD).next_to(d2.get_end(), m.UL)
+        g_d2 = m.VGroup(d2, d2_label)
+        self.play(m.Create(g_d2))
+
+        self.wait(0.5)
+
+
+        # Координаты в новом базисе - золотые, длинные скобки
+        coords_new = m.Matrix([["0"], ["-2.0"]], left_bracket="[", right_bracket="]").set_color(m.GOLD)
+        coords_new.scale(0.6).next_to(vec_A.get_end(), m.UP, buff=0.6)
+        self.play(m.Create(coords_new))
+
+        # Подпись с разложением
+        basis_note = m.MathTex("\\vec{A} = 0\\cdot\\vec{d}_1 + (-3)\\cdot\\vec{d}_2", color=m.GOLD).to_edge(m.DOWN)
+        self.play(m.Create(basis_note))
+
+        self.wait(2)
 
 if __name__ == '__main__':
-    import os
+    import subprocess
     from pathlib import Path
 
     SCENES = [
@@ -1047,13 +1115,18 @@ if __name__ == '__main__':
         # "VectorBasis",
         # "VectorLinearCombineCollinear",
         # "VectorLinearCombine23D",
-        "AddFunction",
-        "AddNotLinear",
-        "Square",
-        "LinearTransformExample",
+        #"AddFunction",
+        #"AddNotLinear",
+        #"Square",
+        #"LinearTransformExample",
+        "VectorInTwoBases",
+        #"VectorInTwoBasesSimple",
+  
     ]
     file_path = Path(__file__).resolve()
 
     for SCENE in SCENES:
-        os.system(f"manim {Path(__file__).resolve()} {SCENE} -qh")
-        os.system(f"manim {Path(__file__).resolve()} {SCENE} -s")
+        # Генерация видео
+        subprocess.run(["manim", str(file_path), SCENE, "-qh"])
+        # Генерация последнего кадра
+        subprocess.run(["manim", str(file_path), SCENE, "-s"])
