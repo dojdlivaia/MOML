@@ -1916,74 +1916,7 @@ class MatrixDeterminantGeometry(LinearTransformationScene_):
         self.play(m.Write(area_text_B), run_time=0.5)
         self.wait(3)
 
-class DegenerateParallelepiped3D(ThreeDScene_):
-    """
-    Иллюстрация вырожденного параллелепипеда для матрицы 3x3.
-    
-    Матрица A = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] имеет определитель 0.
-    Её столбцы линейно зависимы (v3 = 2*v2 - v1) и лежат в одной плоскости.
-    Визуализация показывает три вектора-столбца, выходящие из начала координат,
-    и полупрозрачную плоскость, в которой они лежат. Объём параллелепипеда равен нулю.
-    """
-    def construct(self):
-        self.basis_color = m.PURPLE
-        self.axis_color = m.GRAY
-        self.text_color = m.DARK_GRAY
 
-        A = np.array([
-            [1, 2, 3],
-            [4, 5, 6],
-            [7, 8, 9]
-        ])
-        v1, v2, v3 = A[:, 0], A[:, 1], A[:, 2]
-
-        axes = m.ThreeDAxes(x_range=[-1, 10], y_range=[-1, 10], z_range=[-1, 10])
-        axes.set_color(self.axis_color)
-        axes.add(axes.get_axis_labels())
-        self.add(axes)
-
-        self.set_camera_orientation(phi=70 * m.DEGREES, theta=-30 * m.DEGREES)
-        self.begin_ambient_camera_rotation(rate=0.1)
-
-        plane = m.Surface(
-            lambda u, v: u * v1 + v * v2,
-            u_range=[-0.5, 1.2], v_range=[-0.5, 1.2],
-            resolution=(15, 15)
-        )
-        plane.set_fill(self.basis_color, opacity=0.15)
-        plane.set_stroke(self.basis_color, width=2, opacity=0.5)
-        plane.set_shade_in_3d(True)
-
-        self.play(m.FadeIn(plane, run_time=1.5))
-        self.wait(0.5)
-
-        vec1 = m.Arrow3D(start=m.ORIGIN, end=v1, color=self.basis_color)
-        vec2 = m.Arrow3D(start=m.ORIGIN, end=v2, color=self.basis_color)
-        vec3 = m.Arrow3D(start=m.ORIGIN, end=v3, color=self.basis_color)
-
-        self.play(
-            m.Create(vec1, run_time=0.5),
-            m.Create(vec2, run_time=0.5),
-            m.Create(vec3, run_time=0.5)
-        )
-        self.wait(1)
-
-        mat = m.Matrix(A).scale(0.75)
-        mat.set_column_colors(self.basis_color, self.basis_color, self.basis_color)
-        mat.to_corner(m.UP + m.LEFT, buff=0.5)
-        self.add_fixed_in_frame_mobjects(mat)
-        self.play(m.Create(mat, run_time=0.5))
-
-        det_eq = m.MathTex(r"\det(A) = 0", font_size=32).next_to(mat, m.DOWN, buff=0.3)
-        det_eq.set_color(self.text_color)
-        self.add_fixed_in_frame_mobjects(det_eq)
-        self.play(m.Write(det_eq, run_time=0.5))
-
-        info = m.Text("Линейная зависимость \n Объём = 0", font_size=24, color=self.text_color).next_to(det_eq, m.DOWN, buff=0.3)
-        self.add_fixed_in_frame_mobjects(info)
-        self.play(m.Write(info, run_time=0.5))
-
-        self.wait(4)
 
 class DeterminantVolumeScaling3D(ThreeDScene_):
     """
@@ -2069,8 +2002,8 @@ class DeterminantVolumeScaling3D(ThreeDScene_):
 
 
 
-
 class DeterminantVolumeScale(m.ThreeDScene):
+    # определитель трехмерной матрицы как объем параллелепипеда на ее векторах
     def create_matrix(self, np_matrix):
         mat = m.Matrix(np_matrix)
         mat.scale(0.75)
@@ -2095,12 +2028,17 @@ class DeterminantVolumeScale(m.ThreeDScene):
         self.basis_k_color = m.GOLD
         self.text_color = m.DARK_GRAY  # Серый цвет для текста
 
-        # Матрица преобразования: определитель = 2 * 1 * -1.5 = -3
+        # Матрица преобразования: 
+        # Включает наклон (shear), чтобы показать параллелепипед, а не просто кубоид.
+        # Определитель = 2 * 1 * 1.5 = 3.
         Mat = np.array([
             [2, 0, 0],
-            [0, 1, 0],
-            [0, 0, -1.5]
+            [1, 1, 0],
+            [0, 0, 1.5]
         ])
+
+        # Начальная матрица (единичная)
+        Id = np.eye(3)
 
         # Настройка 3D осей
         axes = m.ThreeDAxes()
@@ -2117,16 +2055,20 @@ class DeterminantVolumeScale(m.ThreeDScene):
         basis_vector_helper.to_corner(m.UP + m.RIGHT)
         self.add_fixed_in_frame_mobjects(basis_vector_helper)
 
-        # Добавление матрицы
-        matrix = self.create_matrix(Mat)
-        self.add_fixed_in_frame_mobjects(matrix)
+        # Создание матриц (начальной и конечной)
+        matrix_initial = self.create_matrix(Id)
+        matrix_final = self.create_matrix(Mat)
+        
+        self.add_fixed_in_frame_mobjects(matrix_initial)
 
         self.add(axes)
         self.begin_ambient_camera_rotation(rate=0.1)
 
         # Создание куба (единичный объем)
         cube = m.Cube(side_length=1, fill_color=m.BLUE, stroke_width=2, fill_opacity=0.2)
-        cube.set_stroke(m.BLUE_E)
+        # Сдвигаем куб так, чтобы его угол был в (0,0,0), а ребра совпадали с осями
+        cube.shift(m.RIGHT * 0.5 + m.UP * 0.5 + m.OUT * 0.5) 
+        cube.set_stroke(m.BLUE)
 
         # Исходные векторы
         i_vec = m.Vector(np.array([1, 0, 0]), color=self.basis_i_color)
@@ -2138,9 +2080,21 @@ class DeterminantVolumeScale(m.ThreeDScene):
         j_vec_new = m.Vector(Mat @ np.array([0, 1, 0]), color=self.basis_j_color)
         k_vec_new = m.Vector(Mat @ np.array([0, 0, 1]), color=self.basis_k_color)
 
-        # Тексты на экране (используем m.Text для кириллицы)
-        vol_text = m.Text("Объём = 1", color=self.text_color).next_to(cube, m.UP + m.RIGHT)
+        # --- НАСТРОЙКА ТЕКСТА ---
+        # Текст "Объём = 1": чуть меньше (0.8) и сдвинут выше/правее
+        vol_text = m.Text("Объём = 1", color=self.text_color).scale(0.7)
+        vol_text.next_to(cube, m.UP + m.RIGHT).shift(m.UP * 0.3 + m.RIGHT * 0.3)
         self.add_fixed_in_frame_mobjects(vol_text)
+
+        # Текст "Объём = 3": еще меньше (0.7) и сдвинут выше/правее
+        new_vol_text = m.Text("Объём = 3", color=self.text_color).scale(0.7)
+        new_vol_text.next_to(cube, m.UP + m.RIGHT).shift(m.UP * 0.5 + m.RIGHT * 0.5)
+        #self.add_fixed_in_frame_mobjects(new_vol_text)
+
+        # Текст определителя
+        det_info = m.Tex(r"$|\det(A)| = 3$", color=self.text_color).scale(0.8)
+        det_info.next_to(new_vol_text, m.DOWN)
+        #self.add_fixed_in_frame_mobjects(det_info)
 
         # Анимация появления куба и векторов
         self.play(
@@ -2149,37 +2103,152 @@ class DeterminantVolumeScale(m.ThreeDScene):
             m.GrowArrow(j_vec),
             m.GrowArrow(k_vec),
             m.Write(basis_vector_helper),
+            m.Write(matrix_initial),
             m.Write(vol_text)
         )
 
         self.wait()
 
-        # Анимация трансформации матрицей
+        # Анимация трансформации (куб, векторы, матрица)
         matrix_anim = m.ApplyMatrix(Mat, cube)
 
         self.play(
             matrix_anim,
             m.Transform(i_vec, i_vec_new, rate_func=matrix_anim.get_rate_func(), run_time=matrix_anim.get_run_time()),
             m.Transform(j_vec, j_vec_new, rate_func=matrix_anim.get_rate_func(), run_time=matrix_anim.get_run_time()),
-            m.Transform(k_vec, k_vec_new, rate_func=matrix_anim.get_rate_func(), run_time=matrix_anim.get_run_time())
+            m.Transform(k_vec, k_vec_new, rate_func=matrix_anim.get_rate_func(), run_time=matrix_anim.get_run_time()),
+            m.Transform(matrix_initial, matrix_final), 
+            run_time=2.5
         )
 
-        # Обновление текста объёма и добавление формулы определителя
-        new_vol_text = m.Text("Объём = 3", color=self.text_color).move_to(vol_text)
-        det_info = m.Tex(r"$|\det(A)| = |-3| = 3$", color=self.text_color).next_to(vol_text, m.DOWN)
-        det_info.scale(0.8)
-        
+        # Последовательное обновление текста:
+        # 1. Исчезает "Объём = 1"
+        self.play(m.FadeOut(vol_text, shift=m.UP), run_time=0.5)
         self.add_fixed_in_frame_mobjects(new_vol_text)
         self.add_fixed_in_frame_mobjects(det_info)
-
-        # ReplacementTransform плавно заменяет старый текст новым без лишнего наложения
+        # 2. Появляются "Объём = 3" и формула
         self.play(
-            m.ReplacementTransform(vol_text, new_vol_text),
-            m.Write(det_info)
+            m.FadeIn(new_vol_text, shift=m.DOWN),
+            m.FadeIn(det_info, shift=m.DOWN),
+            run_time=0.8
         )
-
         self.wait(2)
 
+
+class MatrixVectorMult(LinearTransformationScene_):
+    '''рисуется 2D матрица в виде параллелепипеда. Матрица выводится на экран. Рисуется вектор. Выводится
+вектор, показывается что он умножается на матрицу. Анимируется умножение матрицы на вектор. Результирующий вектор
+показывается в формуле'''
+    def __init__(self, **kwargs):
+        LinearTransformationScene_.__init__(
+            self,
+            show_coordinates=True,
+            leave_ghost_vectors=False,
+            show_basis_vectors=False,  # Отключаем стандартный базис, чтобы не дублировался
+            **kwargs
+        )
+
+    def construct(self):
+        # 1. Подготовка данных
+        mat_A = np.array([[1.5, 0.5], [-0.3, 2.5]])
+        vec_x_2d = np.array([2, 1.5])
+        
+        # Столбцы матрицы (новые базисные векторы) в 3D
+        col1 = np.append(mat_A[:, 0], 0)  # [1.5, -0.3, 0]
+        col2 = np.append(mat_A[:, 1], 0)  # [0.5, 2.5, 0]
+        
+        # Результаты вычислений
+        res_vec_3d = np.append(mat_A @ vec_x_2d, 0)
+        vec_x_3d = np.append(vec_x_2d, 0)
+
+        # Цветовая схема
+        C_COL1 = m.GREEN
+        C_COL2 = m.RED
+        C_VEC  = m.PURPLE
+
+        # --- ШАГ 1: Параллелограмм, векторы и матрица (появляются параллельно) ---
+        
+        # Два базисных вектора
+        arrow_c1 = m.Arrow(m.ORIGIN, col1, color=C_COL1, buff=0)
+        arrow_c2 = m.Arrow(m.ORIGIN, col2, color=C_COL2, buff=0)
+        
+        # Параллелограмм (полупрозрачный, чтобы векторы оставались сверху)
+        parallelogram = m.Polygon(
+            m.ORIGIN, col1.tolist(), (col1 + col2).tolist(), col2.tolist(),
+            fill_color=m.GRAY, fill_opacity=0.2, stroke_color=m.DARK_GRAY, stroke_width=2
+        )
+        
+        # Матрица с раскрашенными столбцами
+        matrix_tex = m.Matrix(
+            mat_A,
+            element_to_mobject_config={"color": m.BLACK}
+        ).scale(1).to_edge(m.UP, buff=1).to_edge(m.LEFT, buff=0.5)
+        matrix_tex.get_columns()[0].set_color(C_COL1)
+        matrix_tex.get_columns()[1].set_color(C_COL2)
+
+        # Анимируем одновременное появление
+        self.play(
+            m.GrowArrow(arrow_c1),
+            m.GrowArrow(arrow_c2),
+            m.Create(parallelogram),
+            m.Create(matrix_tex),
+            run_time=2
+        )
+        self.wait(0.5)
+
+        # --- ШАГ 2: Исходный вектор x ---
+        arrow_x = m.Vector(vec_x_3d.tolist(), color=C_VEC, buff=0)
+        self.play(m.GrowArrow(arrow_x), run_time=1)
+        self.wait(0.5)
+
+        # --- ШАГ 3: Анимация умножения (Линейная комбинация) ---
+        # Убираем геометрию, чтобы освободить место для формул
+        self.play(
+            m.FadeOut(parallelogram),
+            m.FadeOut(arrow_c1),
+            m.FadeOut(arrow_c2),
+            m.FadeOut(arrow_x),
+            run_time=0.5
+        )
+
+        # Компонент 1: 2 * col1 (Зелёный)
+        # Размещаем строго слева под матрицей
+        comp1_end = (2 * col1).tolist()
+        comp1 = m.Arrow(m.ORIGIN, comp1_end, color=C_COL1, buff=0)
+        comp1_label = m.MathTex(
+            r"2 \cdot \begin{bmatrix} 1.5 \\ -0.3 \end{bmatrix}", 
+            color=C_COL1
+        ).to_edge(m.LEFT, buff=0.5).shift(m.DOWN * 2)
+        
+        self.play(m.GrowArrow(comp1), m.Write(comp1_label), run_time=1.5)
+        self.wait(0.5)
+        
+        # Компонент 2: 1.5 * col2 (Красный)
+        comp2_start = comp1_end
+        comp2_end = (comp1_end + 1.5 * col2).tolist()
+        comp2 = m.Arrow(comp2_start, comp2_end, color=C_COL2, buff=0)
+        comp2_label = m.MathTex(
+            r"+ 1.5 \cdot \begin{bmatrix} 0.5 \\ 2.5 \end{bmatrix}", 
+            color=C_COL2
+        ).next_to(comp1_label, m.RIGHT, buff=0.4)
+        
+        self.play(m.GrowArrow(comp2), m.Write(comp2_label), run_time=1.5)
+        self.wait(0.5)
+        
+        # --- ШАГ 4: Итоговый вектор и формула ---
+        # Всё остаётся выровненным по левому краю
+        res_arrow = m.Arrow(m.ORIGIN, res_vec_3d.tolist(), color=C_VEC, buff=0)
+        res_label = m.MathTex(
+            r"= \vec{x}' = \begin{bmatrix} 3.75 \\ 3.15 \end{bmatrix}", 
+            color=m.BLACK
+        ).next_to(comp2_label, m.RIGHT, buff=0.4)
+        
+        self.play(
+            m.Create(res_arrow),
+            m.Write(res_label),
+            run_time=1.5
+        )
+        self.wait(2)
 
 if __name__ == '__main__':
     import os
@@ -2201,11 +2270,11 @@ if __name__ == '__main__':
         #"LT3D_scale2_reversed",
         #"MatrixDeterminantScene",
         #"LinearTransformExample",
-        "DegenerateVolume3D",
-        "MatrixDeterminantGeometry",
-        #"DegenerateParallelepiped3D",
+        #"DegenerateVolume3D",
+        #"MatrixDeterminantGeometry",
         #"DeterminantVolumeScaling3D",
-        "DeterminantVolumeScale",
+        #"DeterminantVolumeScale",
+        'MatrixVectorMult',
     ]
     file_path = Path(__file__).resolve()
 
