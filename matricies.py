@@ -2376,6 +2376,280 @@ class RotationPlane2D(LinearTransformationScene_):
         self.play(m.Create(arc_2), m.Write(label_2), run_time=0.6)
         self.wait(2)
 
+class ReflectionMatrixScene(LinearTransformationScene_):
+    '''Матрица отражения'''
+    def __init__(self, **kwargs):
+        super().__init__(
+            show_coordinates=True,
+            leave_ghost_vectors=False,
+            show_basis_vectors=False,
+            **kwargs
+        )
+
+    def construct(self):
+        # 1. Исходный вектор (берем не на оси, чтобы было видно отражение)
+        # Вектор v = (2, 3)
+        v_start = np.array([2, 3, 0])
+        self.add_vector(v_start, color=m.PURPLE)
+        self.wait(0.5)
+
+        # 2. Матрица отражения S
+        # S = [[1, 0], [0, -1]]
+        S = np.array([[1, 0], [0, -1]])
+
+        # Создаем визуальное отображение матрицы
+        mat = m.Matrix(
+            [[1, 0], [0, -1]],
+            element_to_mobject_config={"font_size": 40, "color": m.DARK_GRAY}
+        )
+        mat.scale(1.2).to_edge(m.UP, buff=1).to_edge(m.LEFT)
+
+        # Показываем матрицу
+        self.play(m.Write(mat), run_time=1)
+        self.wait(1)
+
+        # 3. Применяем преобразование
+        # Сетка перевернется, вектор отразится относительно оси X
+        self.apply_matrix(S)
+        self.wait(1.5)
+
+
+class ReflectionLineScene(LinearTransformationScene_):
+    '''4 отражение относительно линии, проходящей через начало координат'''
+    def __init__(self, **kwargs):
+        super().__init__(
+            show_coordinates=True,
+            leave_ghost_vectors=False,
+            show_basis_vectors=False,
+            **kwargs
+        )
+
+    def construct(self):
+        # 1. Параметры отражения (α = 30°)
+        alpha_deg = 30
+        alpha_rad = np.deg2rad(alpha_deg)
+        c2a, s2a = np.cos(2*alpha_rad), np.sin(2*alpha_rad)
+        S = np.array([[c2a, s2a], 
+                      [s2a, -c2a]])
+
+        # 2. Исходный вектор (взят не на осях и не на прямой, чтобы отражение было заметно)
+        v_start = np.array([3, 1, 0])
+        self.add_vector(v_start, color=m.PURPLE)
+        self.wait(0.5)
+
+        # 3. Прямая отражения 
+        line_len = 5
+        refl_line = m.Line(
+            start=[-line_len * np.cos(alpha_rad), -line_len * np.sin(alpha_rad), 0],
+            end=[line_len * np.cos(alpha_rad), line_len * np.sin(alpha_rad), 0],
+            color=m.YELLOW,
+            stroke_width=4
+        )
+
+        self.play(m.Create(refl_line), run_time=1.5)
+        self.wait(1)
+
+        # 4. Матрица отражения S(α)
+        mat_sym = m.Matrix(
+            [[rf"\cos(2\alpha)", rf"\sin(2\alpha)"],
+             [rf"\sin(2\alpha)", rf"-\cos(2\alpha)"]],
+            element_to_mobject_config={"font_size": 32, "color": m.DARK_GRAY}
+        )
+        mat_sym.scale(1.1).to_edge(m.UP, buff=1).to_edge(m.LEFT)
+
+        mat_num = m.Matrix(
+            [[f"{c2a:.2f}", f"{s2a:.2f}"],
+             [f"{s2a:.2f}", f"{-c2a:.2f}"]],
+            element_to_mobject_config={"font_size": 32, "color": m.DARK_GRAY}
+        )
+        mat_num.move_to(mat_sym)
+
+        self.play(m.Write(mat_sym), run_time=1)
+        self.play(m.Transform(mat_sym, mat_num), run_time=1.5)
+        self.wait(0.5)
+
+        # 5. Применяем отражение
+        self.apply_matrix(S)
+        self.wait(1.5)
+
+                   
+        self.wait(0.05)  # Синхронизация рендера
+
+class PermutationMatrixScene(LinearTransformationScene_):
+    """5 Перестановка в двумерном пространстве. 
+    Показывается матрица перестановок и анимируется ее действие.]"""
+    def __init__(self, **kwargs):
+        super().__init__(
+            show_coordinates=True,
+            leave_ghost_vectors=False,
+            show_basis_vectors=False,
+            **kwargs
+        )
+
+    def construct(self):
+        # 1. ИСПРАВЛЕНИЕ: Берем вектор [2, 3] вместо [3, 7].
+        v_start = np.array([2, 3, 0])
+        self.add_vector(v_start, color=m.PURPLE)
+        self.wait(0.5)
+
+        # 2. Матрица перестановки P (меняет X и Y местами)
+        P = np.array([[0, 1], [1, 0]])
+
+        # Создаем визуальное отображение матрицы
+        mat = m.Matrix(
+            [[0, 1], [1, 0]],
+            element_to_mobject_config={"font_size": 40, "color": m.DARK_GRAY}
+        )
+        mat.scale(1.2).to_edge(m.UP, buff=1).to_edge(m.LEFT)
+
+        # Показываем матрицу
+        self.play(m.Write(mat), run_time=1)
+        self.wait(1)
+
+        # 3. Анимация действия
+        # Вектор перемещается из (2, 3) в (3, 2)
+        self.apply_matrix(P)
+        self.wait(1.5)
+
+class Permutation3DScene(ThreeDScene_):
+    """6 Перестановка в трехмерном пространстве с параллелепипедом"""
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.basis_i_color = m.GREEN
+        self.basis_j_color = m.RED
+        self.basis_k_color = m.GOLD
+
+    def construct(self):
+        # 1. Настройка осей и камеры
+        axes = m.ThreeDAxes(x_length=6, y_length=6, z_length=6)
+        axes.set_color(m.GRAY)
+        self.set_camera_orientation(phi=70 * m.DEGREES, theta=-45 * m.DEGREES)
+        self.begin_ambient_camera_rotation(rate=0.15)
+        self.add(axes)
+        self.wait(1)
+
+        # 2. Векторы РАЗНОЙ длины (1, 2, 3)
+        i_vec = m.Vector(m.RIGHT * 1, color=self.basis_i_color)
+        j_vec = m.Vector(m.UP * 2, color=self.basis_j_color)
+        k_vec = m.Vector(m.OUT * 3, color=self.basis_k_color)
+
+        # 3. Метки (исправлено положение k)
+        i_label = m.MathTex("i").set_color(self.basis_i_color).next_to(i_vec, m.RIGHT)
+        j_label = m.MathTex("j").set_color(self.basis_j_color).next_to(j_vec, m.UP)
+        # k_label сдвигаем чуть выше (m.UP), чтобы не перекрывалось осями
+        k_label = m.MathTex("k").set_color(self.basis_k_color).next_to(k_vec, m.UP + m.RIGHT*0.5)
+
+        self.add_fixed_in_frame_mobjects(i_label, j_label, k_label)
+
+        # 4. Параллелепипед (объем, натянутый на векторы)
+        # Создаем куб, масштабируем его под длины векторов (1, 2, 3) и сдвигаем в первый октант
+        box = m.Cube(side_length=1)
+        box.scale([1, 2, 3]) 
+        box.shift([0.5, 1, 1.5]) # Сдвигаем, чтобы угол был в (0,0,0)
+        box.set_stroke(m.WHITE, width=1, opacity=0.5)
+        box.set_fill(m.BLUE, opacity=0.1)
+
+        self.play(
+            m.GrowArrow(i_vec), m.GrowArrow(j_vec), m.GrowArrow(k_vec),
+            m.FadeIn(box),
+            m.Write(i_label), m.Write(j_label), m.Write(k_label)
+        )
+        self.wait(1)
+
+
+        # ПРИМЕР 1: Циклическая перестановка
+        P1 = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]])
+        mat1 = m.Matrix(
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            element_to_mobject_config={"font_size": 28}
+        )
+        mat1.scale(0.8).to_corner(m.UP + m.LEFT).shift(m.DOWN * 0.8)
+        self.add_fixed_in_frame_mobjects(mat1)
+
+
+        self.play(m.Write(mat1))
+        self.wait(1)
+
+        # Вычисляем новые положения (умножаем матрицу на исходные векторы)
+        # Важно: умножаем на исходные координаты [1,0,0], [0,2,0], [0,0,3]
+        i1_new = m.Vector(P1 @ np.array([1, 0, 0]) * 1, color=self.basis_i_color)
+        j1_new = m.Vector(P1 @ np.array([0, 1, 0]) * 2, color=self.basis_j_color)
+        k1_new = m.Vector(P1 @ np.array([0, 0, 1]) * 3, color=self.basis_k_color)
+
+        # Трансформируем и параллелепипед
+        box1_new = m.Cube(side_length=1)
+        box1_new.scale([1, 2, 3]) # Сохраняем пропорции
+        box1_new.shift([0.5, 1, 1.5])
+        box1_new.apply_matrix(P1) # Применяем матрицу к форме
+        box1_new.set_stroke(m.WHITE, width=1, opacity=0.5)
+        box1_new.set_fill(m.BLUE, opacity=0.1)
+
+        self.play(
+            m.Transform(i_vec, i1_new),
+            m.Transform(j_vec, j1_new),
+            m.Transform(k_vec, k1_new),
+            m.Transform(box, box1_new),
+            run_time=2
+        )
+        self.wait(2)
+
+        self.play(m.FadeOut(mat1), run_time=0.5)
+        self.remove(mat1)
+        self.wait(0.5)
+
+        # Возврат в исходное состояние
+        '''self.play(
+            m.Transform(i_vec, m.Vector(m.RIGHT * 1, color=self.basis_i_color)),
+            m.Transform(j_vec, m.Vector(m.UP * 2, color=self.basis_j_color)),
+            m.Transform(k_vec, m.Vector(m.OUT * 3, color=self.basis_k_color)),
+            m.Transform(box, m.Cube(side_length=1).scale([1, 2, 3]).shift([0.5, 1, 1.5]).set_stroke(m.WHITE, width=1, opacity=0.5).set_fill(m.BLUE, opacity=0.1)),
+            run_time=1.5
+        )
+        self.wait(1)'''
+
+        # ==========================================
+        # ПРИМЕР 2: Замена осей X и Y
+        # ==========================================
+        P2 = np.array([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
+        mat2 = m.Matrix(
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            element_to_mobject_config={"font_size": 28}
+        )
+        mat2.scale(0.8).to_corner(m.UP + m.LEFT).shift(m.DOWN * 0.8)
+        self.add_fixed_in_frame_mobjects(mat2)
+
+
+        self.play(m.Write(mat2))
+        self.wait(1)
+
+        i2_new = m.Vector(P2 @ np.array([1, 0, 0]) * 1, color=self.basis_i_color)
+        j2_new = m.Vector(P2 @ np.array([0, 1, 0]) * 2, color=self.basis_j_color)
+        k2_new = m.Vector(P2 @ np.array([0, 0, 1]) * 3, color=self.basis_k_color) # k не меняется
+
+        box2_new = m.Cube(side_length=1)
+        box2_new.scale([1, 2, 3])
+        box2_new.shift([0.5, 1, 1.5])
+        box2_new.apply_matrix(P2)
+        box2_new.set_stroke(m.WHITE, width=1, opacity=0.5)
+        box2_new.set_fill(m.BLUE, opacity=0.1)
+
+        self.play(
+            m.Transform(i_vec, i2_new),
+            m.Transform(j_vec, j2_new),
+            m.Transform(k_vec, k2_new),
+            m.Transform(box, box2_new),
+            run_time=2
+        )
+        self.wait(2)
+
+        self.play(
+            m.FadeOut(mat2), 
+            m.FadeOut(i_vec), m.FadeOut(j_vec), m.FadeOut(k_vec),
+            m.FadeOut(box),
+            m.FadeOut(i_label), m.FadeOut(j_label), m.FadeOut(k_label)
+        )
+        self.wait(1)
+
 if __name__ == '__main__':
     import os
     from pathlib import Path
@@ -2401,7 +2675,11 @@ if __name__ == '__main__':
         #"DeterminantVolumeScaling3D",
         #"DeterminantVolumeScale",
         #'MatrixVectorMult',
-        'RotationPlane2D',
+        #'RotationPlane2D',
+        #'ReflectionMatrixScene',
+        #'ReflectionLineScene',
+        #'PermutationMatrixScene',
+        'Permutation3DScene',
     ]
     file_path = Path(__file__).resolve()
 
