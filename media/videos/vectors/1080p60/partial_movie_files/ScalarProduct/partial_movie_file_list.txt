@@ -1,0 +1,13 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/ScalarProduct/4238065592_1712136200_223132457.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/ScalarProduct/2889369985_1121278796_4064381575.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/ScalarProduct/2889369985_115178990_3172924877.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/ScalarProduct/2889369985_1869421386_1189874601.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/ScalarProduct/2889369985_4154803275_2308574646.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/ScalarProduct/2889369985_2493898549_2237484716.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/ScalarProduct/2889369985_1869421386_2246629682.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/ScalarProduct/2889369985_4266010994_3073943415.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/ScalarProduct/2889369985_3416223451_1136345126.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/ScalarProduct/2889369985_1869421386_3305847987.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/ScalarProduct/2889369985_2767652968_3502632943.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/ScalarProduct/2889369985_516261788_924124551.mp4'

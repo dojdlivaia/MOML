@@ -1,7 +1,7 @@
 # This file is used internally by FFMPEG.
-file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/1080p60/partial_movie_files/AddFunction/4238065592_1198521537_956829693.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/1080p60/partial_movie_files/AddFunction/2889369985_1698526710_3896269696.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/1080p60/partial_movie_files/AddFunction/2889369985_3828750210_2175589675.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/1080p60/partial_movie_files/AddFunction/2889369985_204681480_695376631.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/1080p60/partial_movie_files/AddFunction/2889369985_1876464185_2562903979.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/1080p60/partial_movie_files/AddFunction/2889369985_204681480_3750211344.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/AddFunction/4238065592_1461556142_214727680.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/AddFunction/2889369985_1698526710_1744620705.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/AddFunction/2889369985_3828750210_1364905644.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/AddFunction/2889369985_204681480_1609173018.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/AddFunction/2889369985_1876464185_1262920844.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/AddFunction/2889369985_204681480_87641614.mp4'

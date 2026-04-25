@@ -1,5 +1,5 @@
 # This file is used internally by FFMPEG.
-file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/1080p60/partial_movie_files/LinearTransformExample/4238065592_3583442547_825860812.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/1080p60/partial_movie_files/LinearTransformExample/2889369985_204681480_2650602559.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/1080p60/partial_movie_files/LinearTransformExample/2889369985_3021317249_583925212.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/vectors/1080p60/partial_movie_files/LinearTransformExample/2889369985_204681480_3313494366.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/LinearTransformExample/4238065592_4071578455_2919712047.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/LinearTransformExample/2889369985_204681480_1789100910.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/LinearTransformExample/2889369985_3359216632_2713394793.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/LinearTransformExample/2889369985_204681480_2736976899.mp4'

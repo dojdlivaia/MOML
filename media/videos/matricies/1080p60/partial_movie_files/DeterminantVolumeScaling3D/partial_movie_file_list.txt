@@ -1,0 +1,11 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DeterminantVolumeScaling3D/3511273195_1321424889_4031020922.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DeterminantVolumeScaling3D/3108966229_3602507474_1029660151.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DeterminantVolumeScaling3D/686206425_3611163053_1715329207.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DeterminantVolumeScaling3D/2131936640_3602507474_925032906.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DeterminantVolumeScaling3D/2025506095_283249105_810302826.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DeterminantVolumeScaling3D/1673664656_775019934_1608037478.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DeterminantVolumeScaling3D/1932717695_4226587573_977146177.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DeterminantVolumeScaling3D/689738958_775019934_878331506.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DeterminantVolumeScaling3D/2401911593_2728428018_2382540036.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DeterminantVolumeScaling3D/79274789_917692026_2797424903.mp4'

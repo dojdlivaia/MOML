@@ -1,0 +1,7 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/VectorInTwoBasesSimple/4238065592_3172177578_223132457.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/VectorInTwoBasesSimple/2889369985_2133391713_1851416195.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/VectorInTwoBasesSimple/2889369985_3184409030_1745197591.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/VectorInTwoBasesSimple/2889369985_3055925414_1614069815.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/VectorInTwoBasesSimple/2889369985_2480433872_2957189378.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/vectors/1080p60/partial_movie_files/VectorInTwoBasesSimple/2889369985_516261788_4175841879.mp4'

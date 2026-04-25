@@ -1,0 +1,9 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DegenerateParallelepiped3D/1591209585_1919078152_494507578.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DegenerateParallelepiped3D/245263994_3602507474_337209155.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DegenerateParallelepiped3D/1732409379_390009313_4111558579.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DegenerateParallelepiped3D/2654355801_775019934_3433581174.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DegenerateParallelepiped3D/3113915261_2118728522_733781845.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DegenerateParallelepiped3D/4267515328_485836098_3664066506.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DegenerateParallelepiped3D/1655390059_1403480549_2082109330.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/DegenerateParallelepiped3D/1613688399_326523812_1934362891.mp4'

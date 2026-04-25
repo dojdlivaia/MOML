@@ -1,7 +1,7 @@
 # This file is used internally by FFMPEG.
-file 'file:/home/koroteeev/projects/MOML/media/videos/matricies/1080p60/partial_movie_files/LTExample/4238065592_1655417810_523872896.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/matricies/1080p60/partial_movie_files/LTExample/2889369985_204681480_3997206937.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/matricies/1080p60/partial_movie_files/LTExample/2889369985_1805912639_1486889740.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/matricies/1080p60/partial_movie_files/LTExample/2889369985_204681480_760586355.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/matricies/1080p60/partial_movie_files/LTExample/2889369985_1028599427_1100881600.mp4'
-file 'file:/home/koroteeev/projects/MOML/media/videos/matricies/1080p60/partial_movie_files/LTExample/2889369985_204681480_2043485248.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/LTExample/4238065592_1380647464_2593820479.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/LTExample/2889369985_204681480_2206476460.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/LTExample/2889369985_1890478110_3225855200.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/LTExample/2889369985_204681480_1182622695.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/LTExample/2889369985_1940499621_2362193337.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/LTExample/2889369985_204681480_1085965522.mp4'

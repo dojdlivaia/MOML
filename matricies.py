@@ -2250,6 +2250,132 @@ class MatrixVectorMult(LinearTransformationScene_):
         )
         self.wait(2)
 
+class RotationPlane2D(LinearTransformationScene_):
+    """Анимация матрицы поворота на 30 и -45 градусов"""
+    def __init__(self, **kwargs):
+        LinearTransformationScene_.__init__(
+            self,
+            show_coordinates=True,
+            leave_ghost_vectors=False,
+            show_basis_vectors=False,
+            **kwargs
+        )
+
+    def construct(self):
+        # Фиолетовый вектор строго на оси X
+        v_start = np.array([3, 0, 0])
+        self.add_vector(v_start, color=m.PURPLE)
+        self.wait(0.5)
+
+        # Вспомогательная функция для создания матрицы
+        def create_rot_matrix(c_val, s_val, angle_deg, symbolic=False):
+            if symbolic:
+                c_txt = rf"\cos({angle_deg}^\circ)"
+                s_txt = rf"\sin({angle_deg}^\circ)"
+                row1 = [c_txt, rf"-{s_txt}"]
+                row2 = [s_txt, c_txt]
+            else:
+                c_txt = f"{c_val:.2f}"
+                neg_s_txt = f"{-s_val:.2f}"
+                s_txt = f"{s_val:.2f}"
+                row1 = [c_txt, neg_s_txt]
+                row2 = [s_txt, c_txt]
+
+            mat = m.Matrix(
+                [row1, row2],
+                element_to_mobject_config={"font_size": 32, "color": m.DARK_GRAY}
+            )
+            cols = mat.get_columns()
+            cols[0].shift(m.LEFT * 0.25)
+            cols[1].shift(m.RIGHT * 0.25)
+            mat.scale(1.1).to_edge(m.UP, buff=1).to_edge(m.LEFT)
+            return mat
+
+        # ================= ПОВОРОТ НА +30 ГРАДУСОВ =================
+        angle_1 = 30
+        rad_1 = np.deg2rad(angle_1)
+        c1, s1 = np.cos(rad_1), np.sin(rad_1)
+
+        mat_sym = create_rot_matrix(c1, s1, angle_1, symbolic=True)
+        self.play(m.Write(mat_sym), run_time=1)
+
+        mat_num = create_rot_matrix(c1, s1, angle_1, symbolic=False)
+        mat_num.move_to(mat_sym)
+        self.play(m.Transform(mat_sym, mat_num), run_time=1)
+        self.wait(0.2)
+
+        rot_mat_1 = np.array([[c1, -s1], [s1, c1]])
+        self.apply_matrix(rot_mat_1)
+        self.wait(0.6)
+
+        # ПОКАЗЫВАЕМ ДУГУ
+        arc_1 = m.Arc(radius=1.5, start_angle=0, angle=rad_1, color=m.ORANGE, stroke_width=4)
+        label_1 = m.MathTex("30^\\circ", font_size=36)
+        mid_angle = rad_1 / 2
+        label_distance = 1.8
+        label_1.move_to([label_distance * np.cos(mid_angle), label_distance * np.sin(mid_angle), 0])
+        
+        self.play(m.Create(arc_1), m.Write(label_1), run_time=0.6)
+        self.wait(1.5)
+        
+        # ================= УДАЛЕНИЕ ДУГИ И ПОДГОТОВКА К СЛЕДУЮЩЕМУ ПОВОРОТУ =================
+        self.play(m.FadeOut(arc_1), m.FadeOut(label_1), run_time=0.3)
+        
+        # Безопасное удаление из всех внутренних списков сцены
+        for mob in [arc_1, label_1]:
+            if mob in self.mobjects:
+                self.mobjects.remove(mob)
+            for attr_name in ["transformable_mobjects", "moving_mobjects", 
+                              "foreground_mobjects", "background_mobjects"]:
+                if hasattr(self, attr_name) and mob in getattr(self, attr_name):
+                    getattr(self, attr_name).remove(mob)
+                    
+        self.wait(0.05)  # Даём рендер-движку синхронизировать состояние
+        
+        #Возвращаем координаты
+        self.apply_inverse(rot_mat_1)
+        
+        # удаляем матрицу
+        self.play(m.FadeOut(mat_sym), run_time=0.3)
+        self.wait(0.5)
+
+        # ================= ПОВОРОТ НА -45 ГРАДУСОВ =================
+        angle_2 = -45
+        rad_2 = np.deg2rad(angle_2)
+        c2, s2 = np.cos(rad_2), np.sin(rad_2)
+
+        mat_sym_2 = create_rot_matrix(c2, s2, angle_2, symbolic=True)
+        self.play(m.Write(mat_sym_2), run_time=1)
+
+        mat_num_2 = create_rot_matrix(c2, s2, angle_2, symbolic=False)
+        mat_num_2.move_to(mat_sym_2)
+        self.play(m.Transform(mat_sym_2, mat_num_2), run_time=1)
+        self.wait(0.2)
+
+        rot_mat_2 = np.array([[c2, -s2], [s2, c2]])
+        self.apply_matrix(rot_mat_2)
+        self.wait(0.6)
+
+        # ДУГА на -45 градусов
+        arc_2 = m.Arc(
+            radius=1.5,
+            start_angle=0,
+            angle=rad_2,
+            color=m.ORANGE,
+            stroke_width=4
+        )
+        
+        # Подпись "-45°"
+        label_2 = m.MathTex("-45^\\circ", font_size=36)
+        mid_angle_2 = rad_2 / 2
+        label_2.move_to(
+            np.array([label_distance * np.cos(mid_angle_2), 
+                     label_distance * np.sin(mid_angle_2), 0])
+        )
+        
+        self.play(m.Create(arc_2), m.Write(label_2), run_time=0.6)
+        self.wait(2)
+
 if __name__ == '__main__':
     import os
     from pathlib import Path
@@ -2274,7 +2400,8 @@ if __name__ == '__main__':
         #"MatrixDeterminantGeometry",
         #"DeterminantVolumeScaling3D",
         #"DeterminantVolumeScale",
-        'MatrixVectorMult',
+        #'MatrixVectorMult',
+        'RotationPlane2D',
     ]
     file_path = Path(__file__).resolve()
 
