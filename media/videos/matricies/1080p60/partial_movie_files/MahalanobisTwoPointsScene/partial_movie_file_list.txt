@@ -1,0 +1,8 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/MahalanobisTwoPointsScene/767850006_3085603415_1291217423.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/MahalanobisTwoPointsScene/2422982351_548731573_3718799176.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/MahalanobisTwoPointsScene/2422982351_2580986127_2164602995.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/MahalanobisTwoPointsScene/2422982351_2840115676_4230486883.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/MahalanobisTwoPointsScene/2422982351_1300989852_2254473736.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/MahalanobisTwoPointsScene/2422982351_2560998276_1297445087.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/MahalanobisTwoPointsScene/2422982351_3879069619_1902565199.mp4'

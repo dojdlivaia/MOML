@@ -2607,9 +2607,7 @@ class Permutation3DScene(ThreeDScene_):
         )
         self.wait(1)'''
 
-        # ==========================================
         # ПРИМЕР 2: Замена осей X и Y
-        # ==========================================
         P2 = np.array([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
         mat2 = m.Matrix(
             [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
@@ -2649,6 +2647,664 @@ class Permutation3DScene(ThreeDScene_):
             m.FadeOut(i_label), m.FadeOut(j_label), m.FadeOut(k_label)
         )
         self.wait(1)
+class UpperTriangularShearScene(LinearTransformationScene_):
+    """7а Демонстрация сдвига (shear) с помощью верхнетреугольной матрицы в 2D"""
+    def __init__(self, **kwargs):
+        super().__init__(
+            show_coordinates=True,
+            leave_ghost_vectors=False,
+            show_basis_vectors=False,
+            **kwargs
+        )
+
+    def construct(self):
+        # Матрица верхнетреугольного сдвига
+        # Общий вид: [[a, b], [0, c]]. При a=1, c=1, b=1 получаем чистый сдвиг
+        U = np.array([[1, 1], [0, 1]])
+
+        # Визуализация матрицы
+        mat = m.Matrix(
+            [[1, 1], [0, 1]],
+            element_to_mobject_config={"font_size": 32, "color": m.DARK_GRAY}
+        )
+        mat.scale(1.1).to_edge(m.UP, buff=1).to_edge(m.LEFT).shift(m.DOWN * 0.8)
+
+        self.play(m.Write(mat), run_time=1)
+        self.wait(0.5)
+
+        # Тестовый вектор для наглядности
+        # Возьмём (2, 2). После сдвига станет (2 + 1*2, 2) = (4, 2)
+        v_start = np.array([2, 2, 0])
+        self.add_vector(v_start, color=m.PURPLE)
+        self.wait(0.5)
+
+        # Применяем преобразование
+        # Вертикальная сетка останется вертикальной, горизонтальная наклонится
+        self.apply_matrix(U)
+        self.wait(1.5)
+
+class UpperTriangularScene(ThreeDScene_):
+    """8 Демонстрация влияния верхнетреугольной матрицы на трёхмерное пространство"""
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def construct(self):
+        # 1. Настройка осей и камеры
+        axes = m.ThreeDAxes(x_length=10, y_length=10, z_length=10)
+        axes.set_color(m.GRAY)
+        
+        # Настраиваем камеру: угол обзора
+        self.set_camera_orientation(phi=55 * m.DEGREES, theta=-30 * m.DEGREES)
+        
+        self.begin_ambient_camera_rotation(rate=0.15)
+        self.add(axes)
+        self.wait(0.5)
+
+        # 2. Исходный параллелепипед (ещё меньше, чтобы точно поместился)
+        # Размеры: X=0.3, Y=0.6, Z=0.6
+        box = m.Cube(side_length=1)
+        box.scale([0.3, 0.6, 0.6])
+        box.shift([0.15, 0.3, 0.3]) 
+        box.set_stroke(m.WHITE, width=1.5, opacity=0.8)
+        box.set_fill(m.BLUE, opacity=0.15)
+
+        # 3. Цветные вектора-рёбра
+        v_i = m.Vector([0.3, 0, 0], color=m.GREEN, buff=0)
+        v_j = m.Vector([0, 0.6, 0], color=m.RED, buff=0)
+        v_k = m.Vector([0, 0, 0.6], color=m.GOLD, buff=0)
+
+        self.play(
+            m.Create(box),
+            m.GrowArrow(v_i), m.GrowArrow(v_j), m.GrowArrow(v_k),
+            run_time=1.5
+        )
+        self.wait(0.5)
+
+        # 4. Матрица U (сдвинута ниже и уменьшена)
+        U = np.array([[2, 5, -1], [0, 3, 4], [0, 0, 7]])
+        mat = m.Matrix(
+            [[2, 5, -1], [0, 3, 4], [0, 0, 7]],
+            element_to_mobject_config={"font_size": 20, "color": m.DARK_GRAY}
+        )
+        mat.scale(0.6).to_corner(m.UP + m.LEFT).shift(m.DOWN * 1.5)
+        self.add_fixed_in_frame_mobjects(mat)
+
+        self.play(m.Write(mat), run_time=1)
+        self.wait(1)
+
+        # 5. Вычисляем конечные положения
+        v_i_new = m.Vector(U @ [0.3, 0, 0], color=m.GREEN, buff=0)
+        v_j_new = m.Vector(U @ [0, 0.6, 0], color=m.RED, buff=0)
+        v_k_new = m.Vector(U @ [0, 0, 0.6], color=m.GOLD, buff=0)
+
+        box_new = m.Cube(side_length=1)
+        box_new.scale([0.3, 0.6, 0.6])
+        box_new.shift([0.15, 0.3, 0.3])
+        box_new.apply_matrix(U)
+        box_new.set_stroke(m.WHITE, width=1.5, opacity=0.8)
+        box_new.set_fill(m.BLUE, opacity=0.15)
+
+        # 6. Анимация трансформации
+        self.play(
+            m.Transform(box, box_new),
+            m.Transform(v_i, v_i_new),
+            m.Transform(v_j, v_j_new),
+            m.Transform(v_k, v_k_new),
+            run_time=3
+        )
+        self.wait(1.5)
+
+
+        # 7. Очистка
+        self.play(
+            m.FadeOut(mat), 
+            m.FadeOut(box), m.FadeOut(v_i), m.FadeOut(v_j), m.FadeOut(v_k)
+        )
+        self.wait(0.5)
+
+class SymmetricMatrixScene(m.Scene):
+    """9 Сравнение произвольной и симметричной матриц"""
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.camera.background_color = m.WHITE
+
+    def construct(self):
+        # ================= ФУНКЦИЯ СОЗДАНИЯ ПЛОСКОСТИ =================
+        def create_plane():
+            plane = m.NumberPlane(
+                x_range=[-3, 3, 1],
+                y_range=[-3, 3, 1],
+                background_line_style={
+                    "stroke_color": m.GRAY,
+                    "stroke_width": 1,
+                    "stroke_opacity": 0.3
+                },
+                axis_config={"stroke_color": m.BLACK, "stroke_width": 2}
+            )
+            plane.add_coordinates()
+            plane.coordinate_labels.set_color(m.BLACK)
+            return plane
+
+        # 1. Плоскости
+        plane_L = create_plane().shift(m.LEFT * 3.5)
+        plane_R = create_plane().shift(m.RIGHT * 3.5)
+
+        # 2. Окружности (строго на пересечении осей)
+        circle_L = m.Circle(radius=0.8, color=m.BLUE, stroke_width=3)
+        circle_L.move_to(plane_L.c2p(0, 0))
+
+        circle_R = m.Circle(radius=0.8, color=m.GREEN, stroke_width=3)
+        circle_R.move_to(plane_R.c2p(0, 0))
+
+        self.play(m.Create(plane_L), m.Create(plane_R))
+        self.play(m.Create(circle_L), m.Create(circle_R))
+        self.wait(0.5)
+
+        # 3. МАТРИЦЫ (Данные для математики + Визуал для отображения)
+        
+        # === ИСПРАВЛЕНИЕ: Объявляем numpy-массивы ДО визуальных объектов ===
+        mat_A = np.array([[1.5, 1.0], [-0.5, 1.2]])  # Для ApplyMatrix
+        mat_S = np.array([[2.0, 0], [0, 0.8]])       # Для ApplyMatrix
+
+        # ЛЕВАЯ (Синяя) - Визуальное отображение
+        mat_L = m.Matrix(
+            [[1.5, 1.0], [-0.5, 1.2]],
+            element_to_mobject_config={"font_size": 22, "color": m.BLUE}
+        )
+        mat_L.scale(0.6)
+        mat_L.get_brackets().set_color(m.BLUE)
+        mat_L.get_brackets().set_stroke(width=1.5)
+        mat_L.move_to(m.LEFT * 4.5 + m.UP * 2.5)
+
+        title_L = m.VGroup(
+            m.Text("Произвольная", color=m.BLUE, font_size=16),
+            m.MathTex("A", color=m.BLUE, font_size=16)
+        ).arrange(m.RIGHT)
+        title_L.next_to(mat_L, m.DOWN)
+
+        # ПРАВАЯ (Зеленая) - Визуальное отображение
+        mat_R = m.Matrix(
+            [[2.0, 0], [0, 0.8]],
+            element_to_mobject_config={"font_size": 22, "color": m.GREEN}
+        )
+        mat_R.scale(0.6)
+        mat_R.get_brackets().set_color(m.GREEN)
+        mat_R.get_brackets().set_stroke(width=1.5)
+        mat_R.move_to(m.RIGHT * 4.5 + m.UP * 2.5)
+
+        title_R = m.VGroup(
+            m.Text("Симметричная", color=m.GREEN, font_size=16),
+            m.MathTex("S", color=m.GREEN, font_size=16)
+        ).arrange(m.RIGHT)
+        title_R.next_to(mat_R, m.DOWN)
+
+        self.play(m.Write(mat_L), m.Write(title_L), m.Write(mat_R), m.Write(title_R))
+        self.wait(1)
+
+        # 4. Анимация (теперь mat_A и mat_S объявлены и доступны)
+        self.play(
+            m.ApplyMatrix(mat_A, circle_L, about_point=plane_L.c2p(0, 0)),
+            run_time=2
+        )
+        self.play(
+            m.ApplyMatrix(mat_S, circle_R, about_point=plane_R.c2p(0, 0)),
+            run_time=2
+        )
+        self.wait(1)
+
+        # 5. Подпись
+        caption = m.Text(
+            "Симметричная матрица: растяжение вдоль ортогональных осей, без вращения",
+            font_size=22, color=m.BLACK
+        ).to_edge(m.DOWN)
+        self.play(m.Write(caption))
+        self.wait(3)
+
+        # 6. Очистка
+        self.play(m.FadeOut(m.VGroup(
+            plane_L, plane_R, circle_L, circle_R,
+            mat_L, mat_R, title_L, title_R, caption
+        )))
+
+class CovarianceEllipseScene(m.Scene):
+    """10 Визуализация ковариационной матрицы через облако точек и эллипс рассеяния"""
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.camera.background_color = m.WHITE
+        # Фиксируем seed для воспроизводимости анимации
+        np.random.seed(42)
+
+    def construct(self):
+        # Настройка осей
+        axes = m.Axes(
+            x_range=[-4, 4, 1],
+            y_range=[-4, 4, 1],
+            x_length=6,
+            y_length=6
+        )
+        axes.set_color(m.BLACK)
+        axes.add_coordinates()
+        axes.coordinate_labels.set_color(m.BLACK)
+        
+        self.add(axes)
+        self.wait(0.5)
+
+        # Используем настоящее случайное распределение
+        n_points = 100  # Количество точек
+        
+        # Базовые точки из стандартного нормального распределения N(0,1)
+        base_points = np.random.randn(n_points, 2)
+
+        # ШАГ 1: КРУГ (Равные дисперсии, нет корреляции) 
+        cov1 = np.array([[1, 0], [0, 1]])
+        # Точки уже из N(0,I), так что просто используем их
+        points_1_coords = base_points * 0.8  # Немного уменьшим масштаб
+        
+        mat1 = self.create_matrix(cov1, color=m.BLUE)
+        cap1 = m.Text("(a) Равные дисперсии → Круг", color=m.BLACK, font_size=24).to_edge(m.DOWN)
+        
+        # Создаём VGroup из точек
+        points_1 = m.VGroup(*[
+            m.Dot(axes.c2p(p[0], p[1]), radius=0.04, color=m.BLUE_E) 
+            for p in points_1_coords
+        ])
+        
+        # Эллипс (круг) для визуализации
+        contour_1 = m.Circle(radius=1.5, color=m.BLUE, stroke_width=2)
+        contour_1.set_fill(m.BLUE, opacity=0.1)
+        contour_1.move_to(axes.c2p(0, 0))
+
+        self.play(
+            m.Create(contour_1), 
+            m.FadeIn(points_1),
+            m.Write(mat1),
+            m.Write(cap1),
+            run_time=2
+        )
+        self.wait(1)
+        
+        self.play(
+            m.FadeOut(contour_1), m.FadeOut(points_1), 
+            m.FadeOut(mat1), m.FadeOut(cap1)
+        )
+
+        #  ШАГ 2: ЭЛЛИПС ПО ОСЯМ (Разные дисперсии) 
+        cov2 = np.array([[3, 0], [0, 1]]) 
+        # Преобразуем точки: умножаем на sqrt(дисперсий)
+        trans2 = np.array([[np.sqrt(3), 0], [0, 1]])
+        points_2_coords = base_points @ trans2.T
+        
+        mat2 = self.create_matrix(cov2, color=m.BLUE)
+        cap2 = m.Text("(b) Разные дисперсии → Эллипс по осям", color=m.BLACK, font_size=24).to_edge(m.DOWN)
+
+        points_2 = m.VGroup(*[
+            m.Dot(axes.c2p(p[0], p[1]), radius=0.04, color=m.BLUE_E) 
+            for p in points_2_coords
+        ])
+        
+        # Эллипс: ширина и высота пропорциональны sqrt(собственных значений)
+        contour_2 = m.Ellipse(
+            width=2 * np.sqrt(3) * 1.5, 
+            height=2 * 1 * 1.5, 
+            color=m.BLUE, 
+            stroke_width=2
+        )
+        contour_2.set_fill(m.BLUE, opacity=0.1)
+        contour_2.move_to(axes.c2p(0, 0))
+
+        self.play(
+            m.Create(contour_2), 
+            m.FadeIn(points_2),
+            m.Write(mat2),
+            m.Write(cap2),
+            run_time=2
+        )
+        self.wait(1)
+
+        self.play(
+            m.FadeOut(contour_2), m.FadeOut(points_2), 
+            m.FadeOut(mat2), m.FadeOut(cap2)
+        )
+
+        # ШАГ 3: ПОВЁРНУТЫЙ ЭЛЛИПС (Корреляция) 
+        cov3 = np.array([[2, 1], [1, 2]])
+        # Для такой ковариации используем разложение Холецкого или собственное разложение
+        # Собственные значения: 3 и 1, угол поворота 45°
+        angle = np.deg2rad(45)
+        rot = np.array([[np.cos(angle), -np.sin(angle)], [np.sin(angle), np.cos(angle)]])
+        scale = np.array([[np.sqrt(3), 0], [0, 1]])
+        trans3 = rot @ scale
+        
+        points_3_coords = base_points @ trans3.T
+        
+        mat3 = self.create_matrix(cov3, color=m.BLUE)
+        cap3 = m.Text("(c) Корреляция → Повёрнутый эллипс", color=m.BLACK, font_size=24).to_edge(m.DOWN)
+
+        points_3 = m.VGroup(*[
+            m.Dot(axes.c2p(p[0], p[1]), radius=0.04, color=m.BLUE_E) 
+            for p in points_3_coords
+        ])
+        
+        contour_3 = m.Ellipse(
+            width=2 * np.sqrt(3) * 1.5, 
+            height=2 * 1 * 1.5, 
+            color=m.BLUE, 
+            stroke_width=2
+        )
+        contour_3.set_fill(m.BLUE, opacity=0.1)
+        contour_3.rotate(angle)
+        contour_3.move_to(axes.c2p(0, 0))
+
+        self.play(
+            m.Create(contour_3), 
+            m.FadeIn(points_3),
+            m.Write(mat3),
+            m.Write(cap3),
+            run_time=2
+        )
+        self.wait(3)
+
+        self.play(m.FadeOut(*self.mobjects))
+
+    def create_matrix(self, cov_matrix, color):
+        """Вспомогательная функция для создания красивой матрицы"""
+        mat = m.Matrix(
+            cov_matrix,
+            element_to_mobject_config={"font_size": 24, "color": color}
+        )
+        mat.scale(0.7)
+        mat.get_brackets().set_color(m.BLACK)
+        mat.get_brackets().set_stroke(width=2)
+        mat.to_corner(m.UP + m.LEFT, buff=1)
+        return mat
+    
+class MahalanobisDistanceScene(m.Scene):
+    """Визуализация расстояния Махаланобиса vs евклидова расстояния"""
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.camera.background_color = m.WHITE
+        np.random.seed(42)
+
+    def construct(self):
+        # ================= НАСТРОЙКА ОСЕЙ =================
+        axes = m.Axes(
+            x_range=[-4, 4, 1],
+            y_range=[-4, 4, 1],
+            x_length=6,
+            y_length=6
+        )
+        axes.set_color(m.BLACK)
+        axes.add_coordinates()
+        axes.coordinate_labels.set_color(m.BLACK)
+        self.add(axes)
+        self.wait(0.5)
+
+        # ================= ГЕНЕРАЦИЯ ДАННЫХ =================
+        # Ковариационная матрица с корреляцией
+        cov = np.array([[2, 1.5], [1.5, 2]])
+        mean = np.array([0, 0])
+        
+        # Генерируем коррелированные точки
+        n_points = 150
+        base_points = np.random.randn(n_points, 2)
+        # Применяем преобразование для получения нужной ковариации
+        L = np.linalg.cholesky(cov)
+        points_coords = base_points @ L.T * 0.8
+        
+        # Визуализация точек
+        points = m.VGroup(*[
+            m.Dot(axes.c2p(p[0], p[1]), radius=0.03, color=m.BLUE_E) 
+            for p in points_coords
+        ])
+        
+        # Эллипс рассеяния
+        eigvals, eigvecs = np.linalg.eigh(cov)
+        angle = np.arctan2(eigvecs[1, 0], eigvecs[0, 0])
+        ellipse = m.Ellipse(
+            width=2 * np.sqrt(eigvals[0]) * 2.5 * 0.8,
+            height=2 * np.sqrt(eigvals[1]) * 2.5 * 0.8,
+            color=m.BLUE,
+            stroke_width=2
+        )
+        ellipse.set_fill(m.BLUE, opacity=0.1)
+        ellipse.rotate(angle)
+        ellipse.move_to(axes.c2p(0, 0))
+        
+        self.play(m.Create(ellipse), m.FadeIn(points), run_time=2)
+        self.wait(0.5)
+
+        # ================= ДВЕ ТОЧКИ =================
+        # Выбираем две точки: одну в центре облака, другую на периферии
+        point_A = np.array([0.5, 0.5])  # Близко к центру
+        point_B = np.array([2.5, 2.5])  # Дальше, но вдоль главной оси
+        
+        dot_A = m.Dot(axes.c2p(*point_A), radius=0.08, color=m.RED)
+        dot_B = m.Dot(axes.c2p(*point_B), radius=0.08, color=m.GREEN)
+        
+        # Евклидово расстояние (прямая линия)
+        euclid_line = m.Line(
+            axes.c2p(*point_A), 
+            axes.c2p(*point_B), 
+            color=m.RED,
+            stroke_width=3
+        )
+        euclid_dist = np.linalg.norm(point_A - point_B)
+        
+        label_euclid = m.Text(
+            f"Евклидово: {euclid_dist:.2f}",
+            color=m.RED,
+            font_size=20
+        ).to_corner(m.UP + m.LEFT)
+        
+        self.play(
+            m.Create(dot_A), m.Create(dot_B),
+            m.Create(euclid_line),
+            m.Write(label_euclid),
+            run_time=2
+        )
+        self.wait(1)
+
+        # ================= РАССТОЯНИЕ МАХАЛАНОБИСА =================
+        # Вычисляем обратную ковариационную матрицу
+        cov_inv = np.linalg.inv(cov)
+        
+        # Расстояние Махаланобиса
+        diff = point_A - point_B
+        mahal_dist = np.sqrt(diff @ cov_inv @ diff)
+        
+        # Показываем формулу
+        formula = m.MathTex(
+            r"D_M(\mathbf{x}, \mathbf{y}) = \sqrt{(\mathbf{x} - \mathbf{y})^T \Sigma^{-1} (\mathbf{x} - \mathbf{y})}",
+            font_size=24
+        ).to_edge(m.UP)
+        
+        # "Отбеливание" пространства - показываем преобразованные точки
+        # Применяем L^{-1} к точкам, где L - разложение Холецкого
+        L_inv = np.linalg.inv(L)
+        point_A_white = point_A @ L_inv.T * 0.8
+        point_B_white = point_B @ L_inv.T * 0.8
+        
+        # Создаём правую часть сцены для "отбеленного" пространства
+        axes_white = m.Axes(
+            x_range=[-3, 3, 1],
+            y_range=[-3, 3, 1],
+            x_length=4,
+            y_length=4
+        )
+        axes_white.set_color(m.BLACK)
+        axes_white.shift(m.RIGHT * 4)
+        axes_white.add_coordinates()
+        axes_white.coordinate_labels.set_color(m.BLACK)
+        
+        # Круг (единичная ковариация)
+        circle_white = m.Circle(
+            radius=1.5,
+            color=m.GREEN,
+            stroke_width=2
+        )
+        circle_white.set_fill(m.GREEN, opacity=0.1)
+        circle_white.move_to(axes_white.c2p(0, 0))
+        
+        # Точки в отбеленном пространстве
+        dot_A_white = m.Dot(
+            axes_white.c2p(*point_A_white),
+            radius=0.08,
+            color=m.RED
+        )
+        dot_B_white = m.Dot(
+            axes_white.c2p(*point_B_white),
+            radius=0.08,
+            color=m.GREEN
+        )
+        
+        # Линия расстояния Махаланобиса
+        mahal_line = m.Line(
+            axes_white.c2p(*point_A_white),
+            axes_white.c2p(*point_B_white),
+            color=m.GREEN,
+            stroke_width=3
+        )
+        
+        label_mahal = m.Text(
+            f"Махаланобис: {mahal_dist:.2f}",
+            color=m.GREEN,
+            font_size=20
+        ).to_corner(m.UP + m.RIGHT)
+        
+        label_white = m.Text(
+            "«Отбеленное» пространство:\nковариация = I",
+            color=m.BLACK,
+            font_size=16
+        ).next_to(axes_white, m.DOWN)
+        
+        self.play(
+            m.Write(formula),
+            m.Create(axes_white),
+            m.Create(circle_white),
+            m.Create(dot_A_white),
+            m.Create(dot_B_white),
+            m.Create(mahal_line),
+            m.Write(label_mahal),
+            m.Write(label_white),
+            run_time=3
+        )
+        self.wait(2)
+
+        # ================= ФИНАЛЬНАЯ ПОДПИСЬ =================
+        caption = m.Text(
+            "Евклидово расстояние не учитывает форму распределения,\n"
+            "а расстояние Махаланобиса измеряет в единицах стандартного отклонения",
+            color=m.BLACK,
+            font_size=18
+        ).to_edge(m.DOWN)
+        
+        self.play(m.Write(caption), run_time=2)
+        self.wait(3)
+
+        # Очистка
+        self.play(m.FadeOut(*self.mobjects))
+
+class MahalanobisTwoPointsScene(m.Scene):
+    """Анимация отбеливания: Евклидово расстояние между двумя точками превращается в расстояние Махаланобиса"""
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.camera.background_color = m.WHITE
+        np.random.seed(42)
+
+    def construct(self):
+        # 1. Оси
+        axes = m.Axes(x_range=[-4, 4, 1], y_range=[-3, 3, 1], x_length=6, y_length=4)
+        axes.set_color(m.BLACK)
+        axes.add_coordinates()
+        axes.coordinate_labels.set_color(m.BLACK)
+        self.add(axes)
+        
+        # 2. Данные: Коррелированное облако
+        cov = np.array([[2, 1.5], [1.5, 2]])
+        L = np.linalg.cholesky(cov)
+        n_points = 150
+        base_points = np.random.randn(n_points, 2)
+        points_coords = (base_points @ L.T) * 0.8
+        
+        points = m.VGroup(*[m.Dot(axes.c2p(*p), radius=0.04, color=m.BLUE_E) for p in points_coords])
+        
+        # Эллипс рассеяния
+        eigvals, eigvecs = np.linalg.eigh(cov)
+        angle = np.arctan2(eigvecs[1, 0], eigvecs[0, 0])
+        ellipse = m.Ellipse(
+            width=2 * np.sqrt(eigvals[0]) * 2.0 * 0.8,
+            height=2 * np.sqrt(eigvals[1]) * 2.0 * 0.8,
+            color=m.BLUE, stroke_width=2
+        )
+        ellipse.set_fill(m.BLUE, opacity=0.1)
+        ellipse.rotate(angle)
+        ellipse.move_to(axes.c2p(0, 0))
+        
+        # 3. ДВЕ ТОЧКИ
+        p1 = np.array([-1.0, -0.5]) * 0.8
+        p2 = np.array([2.0, 1.5]) * 0.8
+        
+        dot1 = m.Dot(axes.c2p(*p1), radius=0.08, color=m.RED)
+        dot2 = m.Dot(axes.c2p(*p2), radius=0.08, color=m.GREEN)
+        
+        # Исходное Евклидово расстояние (жёлтая линия)
+        euclid_line = m.Line(axes.c2p(*p1), axes.c2p(*p2), color=m.PURPLE, stroke_width=3)
+        euclid_dist = np.linalg.norm(p1 - p2)
+        label_euclid = m.Text(f"Евклидово: {euclid_dist:.2f}", color=m.DARK_GRAY, font_size=20)
+        label_euclid.next_to(euclid_line, m.UP)
+        label_euclid.shift(m.LEFT * 1.8 + m.UP * 0.5)
+        
+        # Показываем исходную сцену
+        self.play(
+            m.Create(ellipse), m.FadeIn(points),
+            m.Create(dot1), m.Create(dot2), m.Create(euclid_line),
+            m.Write(label_euclid),
+            run_time=2
+        )
+        self.wait(1)
+
+        # 4. Матрица отбеливания W = Σ^(-1/2)
+        eigvals, eigvecs = np.linalg.eigh(cov)
+        W = eigvecs @ np.diag(1 / np.sqrt(eigvals)) @ eigvecs.T
+        
+        # Вычисляем, где окажутся точки после отбеливания
+        p1_w = p1 @ W.T
+        p2_w = p2 @ W.T
+        mahal_dist = np.linalg.norm(p1_w - p2_w)
+        
+        label_mahal = m.Text(f"Махаланобис: {mahal_dist:.2f}", color=m.DARK_GRAY, font_size=20)
+        label_mahal.move_to(label_euclid.get_center())
+        
+        
+        # 5. АНИМАЦИЯ ТРАНСФОРМАЦИИ
+        # Применяем матрицу W ко всем объектам одновременно
+        self.play(
+            m.ApplyMatrix(W, m.VGroup(ellipse, points, euclid_line, dot1, dot2)),
+            run_time=2.5
+        )
+        self.wait(0.5)
+        
+        # 6. Финальное состояние
+        # Линия теперь лежит в отбеленном пространстве, её длина = расстояние Махаланобиса
+        final_line = m.Line(axes.c2p(*p1_w), axes.c2p(*p2_w), color=m.ORANGE, stroke_width=4)
+        
+        self.play(
+            m.Transform(euclid_line, final_line),
+            m.Transform(label_euclid, label_mahal),
+            run_time=1
+        )
+        
+        line1 = m.Text("Евклидово  расстояние  не  учитывает  форму  распределения,", 
+                       font_size=18, color=m.BLACK)
+        line2 = m.Text("Махаланобис  измеряет  в  единицах  стандартного  отклонения", 
+                       font_size=18, color=m.BLACK)
+        
+        # Объединяем и выравниваем по центру
+        caption = m.VGroup(line1, line2).arrange(m.DOWN, buff=0.25)
+        caption.to_edge(m.DOWN, buff=1)  # <-- Увеличенный отступ от нижнего края
+        
+        self.play(m.Write(caption))
+        self.wait(3)
 
 if __name__ == '__main__':
     import os
@@ -2679,7 +3335,12 @@ if __name__ == '__main__':
         #'ReflectionMatrixScene',
         #'ReflectionLineScene',
         #'PermutationMatrixScene',
-        'Permutation3DScene',
+        #'Permutation3DScene',
+        #'UpperTriangularShearScene',
+        #'UpperTriangularScene',
+        #'SymmetricMatrixScene',
+        #'CovarianceEllipseScene',
+        'MahalanobisTwoPointsScene',
     ]
     file_path = Path(__file__).resolve()
 
