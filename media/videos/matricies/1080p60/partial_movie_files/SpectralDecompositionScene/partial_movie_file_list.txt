@@ -1,0 +1,11 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/SpectralDecompositionScene/767850006_4154937493_1177716178.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/SpectralDecompositionScene/2422982351_1154125362_169863887.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/SpectralDecompositionScene/2422982351_2840115676_2005475865.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/SpectralDecompositionScene/2422982351_2308449280_2398460526.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/SpectralDecompositionScene/2422982351_3360740738_3626433270.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/SpectralDecompositionScene/2422982351_2840115676_1451161051.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/SpectralDecompositionScene/2422982351_516917226_314800014.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/SpectralDecompositionScene/2422982351_3822710451_2004786099.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/SpectralDecompositionScene/2422982351_548731573_2224160137.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/SpectralDecompositionScene/2422982351_3012854744_2434398996.mp4'

@@ -1,0 +1,9 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/CovarianceRegularizationScene/767850006_1772021501_1477773744.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/CovarianceRegularizationScene/2422982351_4019100522_3154284392.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/CovarianceRegularizationScene/2422982351_2840115676_2965041524.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/CovarianceRegularizationScene/2422982351_4078130235_3157248354.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/CovarianceRegularizationScene/2422982351_2840115676_2819357093.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/CovarianceRegularizationScene/2422982351_3953312795_1189806170.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/CovarianceRegularizationScene/2422982351_548731573_1978086024.mp4'
+file 'file:C:/Users/COLORFUL/Documents/ФИНунивер/MOML/media/videos/matricies/1080p60/partial_movie_files/CovarianceRegularizationScene/2422982351_2091682166_2358810818.mp4'
