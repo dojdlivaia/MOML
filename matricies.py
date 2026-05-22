@@ -1436,7 +1436,8 @@ class MatrixMatrixMulResult(LinearTransformationScene_):
 
         self.wait()
 
-class MatrixMatrixMulNotSymmetrical(LinearTransformationScene_):
+class MatrixVectorMultiplicationScene(LinearTransformationScene_):
+    """22 Умножение матрицы на вектор: линейная комбинация столбцов"""
     def __init__(self, **kwargs):
         LinearTransformationScene_.__init__(
             self,
@@ -1445,54 +1446,107 @@ class MatrixMatrixMulNotSymmetrical(LinearTransformationScene_):
             show_basis_vectors=True,
             **kwargs
         )
+    
     def construct(self):
-        matrix = [
-            [1, -1],
-            [2, 1]
-        ]
-
-        self.add_vector([1, 1])
-        matrix = np.array(matrix).T
-
-        matrix1_text = m.Matrix(matrix).to_edge(m.UP, buff=1).to_edge(m.LEFT).set_column_colors(m.GREEN, m.RED)
-        self.play(m.Create(matrix1_text), run_time=0.3)
+        # 1. Заголовок
+        title = m.Text("Умножение матрицы на вектор", font_size=36, color=m.BLUE)
+        title.to_edge(m.UP)
+        self.add(title)
+        
+        # 2. Матрица A = [[2, 1], [1, 2]]
+        matrix_data = np.array([[2, 1], [1, 2]])
+        matrix = matrix_data.T  # Транспонируем для правильного отображения
+        
+        # 3. Вектор v = (1.5, 1)
+        v = np.array([1.5, 1])
+        
+        # 4. Добавляем исходный вектор
+        vector_v = self.add_vector(v, color=m.GREEN)
+        vector_label = m.MathTex(r"\vec{v} = \begin{bmatrix} 1.5 \\ 1 \end{bmatrix}", 
+                                 font_size=32, color=m.GREEN)
+        vector_label.next_to(vector_v.get_end(), m.RIGHT, buff=0.3)
+        self.play(m.Write(vector_label), run_time=0.5)
         self.wait()
-
-        self.moving_mobjects = []
-        self.apply_matrix(matrix)
+        
+        # 5. Отображаем матрицу
+        matrix_text = m.Matrix(matrix_data).to_edge(m.UP, buff=1).to_edge(m.LEFT)
+        matrix_text.set_column_colors(m.YELLOW, m.YELLOW)
+        matrix_label = m.MathTex(r"A =", font_size=32).next_to(matrix_text, m.LEFT, buff=0.2)
+        self.play(m.Create(matrix_label), m.Create(matrix_text), run_time=0.5)
         self.wait()
-
-        i1 = m.Matrix([[1], [-1]]).set_column_colors(m.GREEN).move_to(2 * m.RIGHT + 1 * m.DOWN)
-        j1 = m.Matrix([[2], [1]]).set_column_colors(m.RED).move_to(3 * m.RIGHT + 1 * m.UP)
-        self.play(m.Create(i1), m.Create(j1), run_time=0.3)
+        
+        # 6. Показываем формулу умножения как линейную комбинацию столбцов
+        # A * v = 1.5 * (2,1) + 1 * (1,2)
+        formula1 = m.MathTex(
+            r"A \cdot \vec{v} = 1.5 \begin{bmatrix} 2 \\ 1 \end{bmatrix} + 1 \begin{bmatrix} 1 \\ 2 \end{bmatrix}",
+            font_size=32
+        )
+        formula1.next_to(title, m.DOWN, buff=0.5).to_edge(m.RIGHT)
+        self.play(m.Write(formula1), run_time=1)
+        self.wait()
+        
+        # 7. Показываем векторы-столбцы матрицы
+        col1 = np.array([matrix_data[0, 0], matrix_data[1, 0]])  # (2,1)
+        col2 = np.array([matrix_data[0, 1], matrix_data[1, 1]])  # (1,2)
+        
+        arrow_col1 = self.add_vector(col1, color=m.YELLOW)
+        arrow_col2 = self.add_vector(col2, color=m.YELLOW)
+        
+        col1_label = m.MathTex(r"\begin{bmatrix} 2 \\ 1 \end{bmatrix}", font_size=28, color=m.YELLOW)
+        col1_label.next_to(arrow_col1.get_end(), m.RIGHT, buff=0.2)
+        col2_label = m.MathTex(r"\begin{bmatrix} 1 \\ 2 \end{bmatrix}", font_size=28, color=m.YELLOW)
+        col2_label.next_to(arrow_col2.get_end(), m.RIGHT, buff=0.2)
+        
+        self.play(m.Write(col1_label), m.Write(col2_label), run_time=0.5)
+        self.wait()
+        
+        # 8. Применяем матричное преобразование к вектору
+        self.moving_mobjects = []  # Очищаем движущиеся объекты
+        self.apply_matrix(matrix_data)  # Применяем матрицу ко всей сцене
+        
+        # 9. После преобразования, показываем результирующий вектор
+        result = matrix_data @ v  # (2, 3.5)
+        result_vector = self.add_vector(result, color=m.RED)
+        
+        result_label = m.MathTex(
+            r"\vec{w} = A \cdot \vec{v} = \begin{bmatrix} 2 \\ 3.5 \end{bmatrix}",
+            font_size=32, color=m.RED
+        )
+        result_label.next_to(result_vector.get_end(), m.RIGHT, buff=0.3)
+        self.play(m.Write(result_label), run_time=1)
+        self.wait()
+        
+        # 10. Обновляем формулу с результатом
+        formula2 = m.MathTex(
+            r"A \cdot \vec{v} = \begin{bmatrix} 2 \\ 3.5 \end{bmatrix}",
+            font_size=32
+        )
+        formula2.next_to(title, m.DOWN, buff=0.5).to_edge(m.RIGHT)
+        self.play(m.Transform(formula1, formula2), run_time=1)
+        self.wait()
+        
+        # 11. Показываем, как столбцы масштабируются коэффициентами вектора
+        scaled_col1 = v[0] * col1  # 1.5 * (2,1) = (3, 1.5)
+        scaled_col2 = v[1] * col2  # 1 * (1,2) = (1, 2)
+        
+        arrow_scaled1 = self.add_vector(scaled_col1, color=m.PURPLE, opacity=0.7)
+        arrow_scaled2 = self.add_vector(scaled_col2, color=m.PURPLE, opacity=0.7)
+        
+        # Показываем их сумму (правило параллелограмма)
+        sum_vector = arrow_scaled1.copy()
+        self.play(
+            m.Transform(arrow_scaled1.copy(), result_vector),
+            run_time=2
+        )
+        
+        # 12. Финальное объяснение
+        explanation = m.Text(
+            "Умножение матрицы на вектор = линейная комбинация столбцов",
+            font_size=28, color=m.YELLOW
+        ).to_edge(m.DOWN, buff=1)
+        self.play(m.Write(explanation), run_time=1)
+        
         self.wait(3)
-        self.play(m.Uncreate(i1), m.Uncreate(j1), run_time=0.3)
-
-        matrix = [
-            [1, -1],
-            [1, 0.5]
-        ]
-
-        matrix = np.array(matrix).T
-
-        matrix2_text = m.Matrix(matrix).to_edge(m.UP, buff=1).to_edge(m.LEFT)
-        times = m.Tex(r"$\times$").next_to(matrix2_text, m.RIGHT)
-        self.play(matrix1_text.animate.next_to(times, m.RIGHT))
-        self.play(m.Create(matrix2_text), run_time=0.3)
-        self.play(m.Create(times), run_time=0.3)
-        self.wait(2)
-
-        self.apply_matrix(matrix)
-
-        i1 = m.Matrix([[0.0], [-1.0]]).set_column_colors(m.GREEN).move_to(1 * m.LEFT + 1 * m.DOWN)
-        j1 = m.Matrix([[3.0], [-1.0]]).set_column_colors(m.RED).move_to(4 * m.RIGHT + 1 * m.DOWN)
-        self.play(m.Create(i1), m.Create(j1), run_time=0.3)
-
-        eq = m.Text("=").next_to(matrix1_text, m.RIGHT)
-        matrix3_text = m.Matrix([[0.0, 3.0], [-1.0, -1.0]]).next_to(eq, m.RIGHT).set_column_colors(m.GREEN, m.RED)
-        self.play(m.Create(eq), m.Create(matrix3_text), run_time=0.3)
-
-        self.wait()
 
 class LUDdecomposition(m.Scene):
     def construct(self):
@@ -2291,7 +2345,7 @@ class RotationPlane2D(LinearTransformationScene_):
             mat.scale(1.1).to_edge(m.UP, buff=1).to_edge(m.LEFT)
             return mat
 
-        # ================= ПОВОРОТ НА +30 ГРАДУСОВ =================
+        #  ПОВОРОТ НА +30 ГРАДУСОВ 
         angle_1 = 30
         rad_1 = np.deg2rad(angle_1)
         c1, s1 = np.cos(rad_1), np.sin(rad_1)
@@ -2318,7 +2372,7 @@ class RotationPlane2D(LinearTransformationScene_):
         self.play(m.Create(arc_1), m.Write(label_1), run_time=0.6)
         self.wait(1.5)
         
-        # ================= УДАЛЕНИЕ ДУГИ И ПОДГОТОВКА К СЛЕДУЮЩЕМУ ПОВОРОТУ =================
+        #  УДАЛЕНИЕ ДУГИ И ПОДГОТОВКА К СЛЕДУЮЩЕМУ ПОВОРОТУ
         self.play(m.FadeOut(arc_1), m.FadeOut(label_1), run_time=0.3)
         
         # Безопасное удаление из всех внутренних списков сцены
@@ -2339,7 +2393,7 @@ class RotationPlane2D(LinearTransformationScene_):
         self.play(m.FadeOut(mat_sym), run_time=0.3)
         self.wait(0.5)
 
-        # ================= ПОВОРОТ НА -45 ГРАДУСОВ =================
+        # ПОВОРОТ НА -45 ГРАДУСОВ 
         angle_2 = -45
         rad_2 = np.deg2rad(angle_2)
         c2, s2 = np.cos(rad_2), np.sin(rad_2)
@@ -2375,6 +2429,212 @@ class RotationPlane2D(LinearTransformationScene_):
         
         self.play(m.Create(arc_2), m.Write(label_2), run_time=0.6)
         self.wait(2)
+
+
+class RotationCompositionScene(LinearTransformationScene_):
+    """Композиция поворотов: R(45) * R(20) = R(65)"""
+    def __init__(self, **kwargs):
+        LinearTransformationScene_.__init__(
+            self,
+            show_coordinates=True,
+            leave_ghost_vectors=False,
+            show_basis_vectors=False,
+            foreground_plane_kwargs={
+                "x_range": [-4, 4, 1],
+                "y_range": [-2, 4, 1],
+                "background_line_style": {"stroke_color": m.GRAY_E, "stroke_width": 1}
+            },
+            **kwargs
+        )
+
+    def construct(self):
+        # Исходный вектор на оси X
+        v_start = np.array([2.5, 0])
+        arrow_initial = self.add_vector(v_start, color=m.PURPLE)
+        v_label = m.MathTex(r"\vec{v}", font_size=24, color=m.PURPLE)
+        v_label.next_to(arrow_initial.get_end(), m.RIGHT, buff=0.2)
+        self.play(m.Write(v_label))
+        self.wait(0.5)
+        
+        # Вспомогательная функция для создания матрицы поворота с цветом
+        def create_rot_matrix(c_val, s_val, angle_deg, color, symbolic=False, scale_factor=0.8):
+            if symbolic:
+                c_txt = rf"\cos({angle_deg}^\circ)"
+                s_txt = rf"\sin({angle_deg}^\circ)"
+                row1 = [c_txt, rf"-{s_txt}"]
+                row2 = [s_txt, c_txt]
+            else:
+                c_txt = f"{c_val:.2f}"
+                neg_s_txt = f"{-s_val:.2f}"
+                s_txt = f"{s_val:.2f}"
+                row1 = [c_txt, neg_s_txt]
+                row2 = [s_txt, c_txt]
+            
+            mat = m.Matrix(
+                [row1, row2],
+                element_to_mobject_config={"font_size": 32, "color": color}
+            )
+            # Делаем элементы матрицы жирнее за счет увеличения размера
+            for elem in mat.get_entries():
+                elem.scale(1.1)
+            
+            cols = mat.get_columns()
+            cols[0].shift(m.LEFT * 0.2)
+            cols[1].shift(m.RIGHT * 0.2)
+            mat.scale(scale_factor).to_edge(m.UP, buff=0.8).to_edge(m.LEFT)
+            return mat
+        
+        # ========== ПЕРВЫЙ ПОВОРОТ НА 20° (ЗЕЛЕНЫЙ) ==========
+        angle_1 = 20
+        rad_1 = np.deg2rad(angle_1)
+        c1, s1 = np.cos(rad_1), np.sin(rad_1)
+        
+        # Показываем матрицу R(20°) зеленого цвета
+        mat_sym_1 = create_rot_matrix(c1, s1, angle_1, m.GREEN, symbolic=True)
+        self.play(m.Write(mat_sym_1), run_time=0.8)
+        
+        mat_num_1 = create_rot_matrix(c1, s1, angle_1, m.GREEN, symbolic=False)
+        mat_num_1.move_to(mat_sym_1)
+        self.play(m.Transform(mat_sym_1, mat_num_1), run_time=0.8)
+        self.wait(0.2)
+        
+        # Анимируем поворот исходного вектора на 20°
+        rot_mat_1 = np.array([[c1, -s1], [s1, c1]])
+        v1 = rot_mat_1 @ v_start
+        
+        # Создаем зеленый вектор и анимируем его поворот
+        arrow_green = self.add_vector(v_start, color=m.GREEN)
+        
+        self.play(
+            m.Rotate(arrow_green, angle=rad_1, about_point=m.ORIGIN),
+            run_time=2
+        )
+        
+        # Добавляем метку для зеленого вектора (выше вектора)
+        v1_label = m.MathTex(r"\vec{v}_1 = R(20^\circ)\vec{v}", font_size=20, color=m.GREEN)
+        v1_label.next_to(arrow_green.get_end(), m.UP, buff=0.3)
+        self.play(m.Write(v1_label), run_time=0.5)
+        
+        # Показываем дугу поворота
+        arc_1 = m.Arc(radius=1.2, start_angle=0, angle=rad_1, color=m.GREEN, stroke_width=3)
+        label_1 = m.MathTex("20^\\circ", font_size=28, color=m.GREEN)
+        mid_angle = rad_1 / 2
+        label_distance = 1.4
+        label_1.move_to([label_distance * np.cos(mid_angle), label_distance * np.sin(mid_angle), 0])
+        
+        self.play(m.Create(arc_1), m.Write(label_1), run_time=0.6)
+        self.wait(1)
+        
+        # ========== ВТОРОЙ ПОВОРОТ НА 45° (КРАСНЫЙ) ==========
+        angle_2 = 45
+        rad_2 = np.deg2rad(angle_2)
+        c2, s2 = np.cos(rad_2), np.sin(rad_2)
+        
+        # Показываем матрицу R(45°) красного цвета
+        mat_sym_2 = create_rot_matrix(c2, s2, angle_2, m.RED, symbolic=True, scale_factor=0.8)
+        mat_sym_2.next_to(mat_sym_1, m.DOWN, buff=0.6).align_to(mat_sym_1, m.LEFT)
+        self.play(m.Write(mat_sym_2), run_time=0.8)
+        
+        mat_num_2 = create_rot_matrix(c2, s2, angle_2, m.RED, symbolic=False, scale_factor=0.8)
+        mat_num_2.move_to(mat_sym_2)
+        self.play(m.Transform(mat_sym_2, mat_num_2), run_time=0.8)
+        self.wait(0.2)
+        
+        # Анимируем поворот зеленого вектора на 45°
+        rot_mat_2 = np.array([[c2, -s2], [s2, c2]])
+        v2 = rot_mat_2 @ v1
+        
+        # Создаем красный вектор и анимируем его поворот от зеленого
+        arrow_red = self.add_vector(v1, color=m.RED)
+        
+        self.play(
+            m.Rotate(arrow_red, angle=rad_2, about_point=m.ORIGIN),
+            run_time=2
+        )
+        
+        # Добавляем метку для красного вектора (правее, чтобы не пересекалась с вектором)
+        v2_label = m.MathTex(r"\vec{v}_2 = R(45^\circ)\vec{v}_1", font_size=20, color=m.RED)
+        v2_label.next_to(arrow_red.get_end(), m.RIGHT, buff=0.4)
+        self.play(m.Write(v2_label), run_time=0.5)
+        
+        # Показываем дугу второго поворота
+        current_angle = np.arctan2(v1[1], v1[0])
+        arc_2 = m.Arc(
+            radius=1.2, 
+            start_angle=current_angle, 
+            angle=rad_2, 
+            color=m.RED, 
+            stroke_width=3
+        )
+        label_2 = m.MathTex("45^\\circ", font_size=28, color=m.RED)
+        mid_angle_2 = current_angle + rad_2 / 2
+        label_2.move_to([label_distance * np.cos(mid_angle_2), label_distance * np.sin(mid_angle_2), 0])
+        
+        self.play(m.Create(arc_2), m.Write(label_2), run_time=0.6)
+        self.wait(1)
+        
+        # ========== ФИНАЛЬНЫЙ ПОВОРОТ НА 65° (ФИОЛЕТОВЫЙ) ==========
+        angle_sum = angle_1 + angle_2
+        rad_sum = np.deg2rad(angle_sum)
+        c_sum, s_sum = np.cos(rad_sum), np.sin(rad_sum)
+        
+        # Показываем матрицу R(65°) фиолетового цвета
+        mat_sym_3 = create_rot_matrix(c_sum, s_sum, angle_sum, m.PURPLE, symbolic=True, scale_factor=0.8)
+        mat_sym_3.next_to(mat_sym_2, m.DOWN, buff=0.6).align_to(mat_sym_2, m.LEFT)
+        self.play(m.Write(mat_sym_3), run_time=0.8)
+        
+        mat_num_3 = create_rot_matrix(c_sum, s_sum, angle_sum, m.PURPLE, symbolic=False, scale_factor=0.8)
+        mat_num_3.move_to(mat_sym_3)
+        self.play(m.Transform(mat_sym_3, mat_num_3), run_time=0.8)
+        self.wait(0.2)
+        
+        # Анимируем прямой поворот исходного вектора на 65°
+        rot_mat_sum = np.array([[c_sum, -s_sum], [s_sum, c_sum]])
+        v3 = rot_mat_sum @ v_start
+        
+        # Создаем фиолетовый вектор и анимируем его поворот
+        arrow_purple = self.add_vector(v_start, color=m.PURPLE)
+        
+        self.play(
+            m.Rotate(arrow_purple, angle=rad_sum, about_point=m.ORIGIN),
+            run_time=2
+        )
+        
+        # Добавляем метку для фиолетового вектора (v3)
+        v3_label = m.MathTex(r"\vec{v}_3 = R(65^\circ)\vec{v}", font_size=20, color=m.PURPLE)
+        v3_label.next_to(arrow_purple.get_end(), m.RIGHT, buff=0.4)
+        v3_label.shift(m.UP * 0.4)
+        self.play(m.Write(v3_label), run_time=0.5)
+        
+        # Показываем дугу финального поворота
+        arc_sum = m.Arc(
+            radius=1.2, 
+            start_angle=0, 
+            angle=rad_sum, 
+            color=m.PURPLE, 
+            stroke_width=3
+        )
+        label_sum = m.MathTex("65^\\circ", font_size=28, color=m.PURPLE)
+        mid_angle_sum = rad_sum / 2
+        label_sum.move_to([label_distance * np.cos(mid_angle_sum), label_distance * np.sin(mid_angle_sum), 0])
+        
+        self.play(m.Create(arc_sum), m.Write(label_sum), run_time=0.6)
+        self.wait(1)
+        
+        # ========== ПОКАЗЫВАЕМ РАВЕНСТВО ==========
+        equivalence = m.MathTex(
+            f"R({angle_2}^\\circ) \\cdot R({angle_1}^\\circ) = R({angle_sum}^\\circ)",
+            font_size=24, color=m.BLACK
+        )
+        equivalence.to_edge(m.DOWN, buff=1.5)
+        self.play(m.Write(equivalence))
+        
+        explanation = m.Text(
+            f"Композиция поворотов на {angle_1}° и {angle_2}° эквивалентна повороту на {angle_sum}°",
+            font_size=20, color=m.BLACK
+        )
+        explanation.next_to(equivalence, m.DOWN)
+        self.play(m.Write(explanation))
 
 class ReflectionMatrixScene(LinearTransformationScene_):
     '''Матрица отражения'''
@@ -2647,6 +2907,7 @@ class Permutation3DScene(ThreeDScene_):
             m.FadeOut(i_label), m.FadeOut(j_label), m.FadeOut(k_label)
         )
         self.wait(1)
+
 class UpperTriangularShearScene(LinearTransformationScene_):
     """7а Демонстрация сдвига (shear) с помощью верхнетреугольной матрицы в 2D"""
     def __init__(self, **kwargs):
@@ -2724,7 +2985,7 @@ class UpperTriangularScene(ThreeDScene_):
         U = np.array([[2, 5, -1], [0, 3, 4], [0, 0, 7]])
         mat = m.Matrix(
             [[2, 5, -1], [0, 3, 4], [0, 0, 7]],
-            element_to_mobject_config={"font_size": 20, "color": m.DARK_GRAY}
+            element_to_mobject_config={"font_size": 42, "color": m.DARK_GRAY}
         )
         mat.scale(0.6).to_corner(m.UP + m.LEFT).shift(m.DOWN * 1.5)
         self.add_fixed_in_frame_mobjects(mat)
@@ -2773,7 +3034,8 @@ class SymmetricMatrixScene(m.Scene):
         def create_plane():
             plane = m.NumberPlane(
                 x_range=[-3, 3, 1],
-                y_range=[-3, 3, 1],
+                y_range=[-2, 3, 1],  # 5 единиц вместо 6
+                y_length=4.5, 
                 background_line_style={
                     "stroke_color": m.GRAY,
                     "stroke_width": 1,
@@ -2809,12 +3071,12 @@ class SymmetricMatrixScene(m.Scene):
         # ЛЕВАЯ (Синяя) - Визуальное отображение
         mat_L = m.Matrix(
             [[1.5, 1.0], [-0.5, 1.2]],
-            element_to_mobject_config={"font_size": 22, "color": m.BLUE}
+            element_to_mobject_config={"font_size": 38, "color": m.BLUE}
         )
         mat_L.scale(0.6)
         mat_L.get_brackets().set_color(m.BLUE)
         mat_L.get_brackets().set_stroke(width=1.5)
-        mat_L.move_to(m.LEFT * 4.5 + m.UP * 2.5)
+        mat_L.move_to(m.LEFT * 4.6 + m.UP * 2.5)
 
         title_L = m.VGroup(
             m.Text("Произвольная", color=m.BLUE, font_size=16),
@@ -2825,18 +3087,19 @@ class SymmetricMatrixScene(m.Scene):
         # ПРАВАЯ (Зеленая) - Визуальное отображение
         mat_R = m.Matrix(
             [[2.0, 0], [0, 0.8]],
-            element_to_mobject_config={"font_size": 22, "color": m.GREEN}
+            element_to_mobject_config={"font_size": 38, "color": m.GREEN}
         )
         mat_R.scale(0.6)
         mat_R.get_brackets().set_color(m.GREEN)
         mat_R.get_brackets().set_stroke(width=1.5)
-        mat_R.move_to(m.RIGHT * 4.5 + m.UP * 2.5)
+        mat_R.move_to(m.RIGHT * 4.6 + m.UP * 2.5)
 
         title_R = m.VGroup(
             m.Text("Симметричная", color=m.GREEN, font_size=16),
             m.MathTex("S", color=m.GREEN, font_size=16)
         ).arrange(m.RIGHT)
         title_R.next_to(mat_R, m.DOWN)
+        title_R.shift(m.RIGHT * 0.2)
 
         self.play(m.Write(mat_L), m.Write(title_L), m.Write(mat_R), m.Write(title_R))
         self.wait(1)
@@ -2856,7 +3119,7 @@ class SymmetricMatrixScene(m.Scene):
         caption = m.Text(
             "Симметричная матрица: растяжение вдоль ортогональных осей, без вращения",
             font_size=22, color=m.BLACK
-        ).to_edge(m.DOWN)
+        ).to_edge(m.DOWN, buff=0.7)
         self.play(m.Write(caption))
         self.wait(3)
 
@@ -2878,9 +3141,9 @@ class CovarianceEllipseScene(m.Scene):
         # Настройка осей
         axes = m.Axes(
             x_range=[-4, 4, 1],
-            y_range=[-4, 4, 1],
+            y_range=[-3, 4, 1],
             x_length=6,
-            y_length=6
+            y_length=5.25
         )
         axes.set_color(m.BLACK)
         axes.add_coordinates()
@@ -2900,8 +3163,8 @@ class CovarianceEllipseScene(m.Scene):
         # Точки уже из N(0,I), так что просто используем их
         points_1_coords = base_points * 0.8  # Немного уменьшим масштаб
         
-        mat1 = self.create_matrix(cov1, color=m.BLUE)
-        cap1 = m.Text("(a) Равные дисперсии → Круг", color=m.BLACK, font_size=24).to_edge(m.DOWN)
+        mat1 = self.create_matrix(cov1, color=m.BLACK)
+        cap1 = m.Text("(a) Равные дисперсии → Круг", color=m.BLACK, font_size=24).to_edge(m.DOWN, buff=0.7)
         
         # Создаём VGroup из точек
         points_1 = m.VGroup(*[
@@ -2934,8 +3197,8 @@ class CovarianceEllipseScene(m.Scene):
         trans2 = np.array([[np.sqrt(3), 0], [0, 1]])
         points_2_coords = base_points @ trans2.T
         
-        mat2 = self.create_matrix(cov2, color=m.BLUE)
-        cap2 = m.Text("(b) Разные дисперсии → Эллипс по осям", color=m.BLACK, font_size=24).to_edge(m.DOWN)
+        mat2 = self.create_matrix(cov2, color=m.BLACK)
+        cap2 = m.Text("(b) Разные дисперсии → Эллипс по осям", color=m.BLACK, font_size=24).to_edge(m.DOWN, buff=0.7)
 
         points_2 = m.VGroup(*[
             m.Dot(axes.c2p(p[0], p[1]), radius=0.04, color=m.BLUE_E) 
@@ -2977,8 +3240,8 @@ class CovarianceEllipseScene(m.Scene):
         
         points_3_coords = base_points @ trans3.T
         
-        mat3 = self.create_matrix(cov3, color=m.BLUE)
-        cap3 = m.Text("(c) Корреляция → Повёрнутый эллипс", color=m.BLACK, font_size=24).to_edge(m.DOWN)
+        mat3 = self.create_matrix(cov3, color=m.BLACK)
+        cap3 = m.Text("(c) Корреляция → Повёрнутый эллипс", color=m.BLACK, font_size=24).to_edge(m.DOWN, buff=0.7)
 
         points_3 = m.VGroup(*[
             m.Dot(axes.c2p(p[0], p[1]), radius=0.04, color=m.BLUE_E) 
@@ -3010,7 +3273,7 @@ class CovarianceEllipseScene(m.Scene):
         """Вспомогательная функция для создания красивой матрицы"""
         mat = m.Matrix(
             cov_matrix,
-            element_to_mobject_config={"font_size": 24, "color": color}
+            element_to_mobject_config={"font_size": 42, "color": color}
         )
         mat.scale(0.7)
         mat.get_brackets().set_color(m.BLACK)
@@ -3540,7 +3803,7 @@ class DegenerateMatrixScene(m.Scene):
         mat_sing = np.array([[1, 2], [2, 4]]) # det = 0
 
         # Визуализация левой матрицы (сдвинута левее графика)
-        m_L = m.Matrix(mat_non, element_to_mobject_config={"font_size": 24, "color": m.BLUE})
+        m_L = m.Matrix(mat_non, element_to_mobject_config={"font_size": 32, "color": m.BLUE})
         m_L.scale(0.7)
         m_L.get_brackets().set_color(m.BLACK)
         m_L.move_to(m.LEFT * 4.5 + m.UP * 2)  # ИСПРАВЛЕНО: левее
@@ -3552,7 +3815,7 @@ class DegenerateMatrixScene(m.Scene):
         label_L.next_to(m_L, m.DOWN)
 
         # Визуализация правой матрицы (сдвинута левее графика)
-        m_R = m.Matrix(mat_sing, element_to_mobject_config={"font_size": 24, "color": m.RED})
+        m_R = m.Matrix(mat_sing, element_to_mobject_config={"font_size": 32, "color": m.RED})
         m_R.scale(0.7)
         m_R.get_brackets().set_color(m.BLACK)
         m_R.move_to(m.RIGHT * 1 + m.UP * 2)  # ИСПРАВЛЕНО: левее (между центром и правой сеткой)
@@ -3831,6 +4094,85 @@ class EigenvalueInterpretationScene(m.Scene):
         # Финальная пауза
         self.wait(2)
         self.play(m.FadeOut(*self.mobjects))
+
+class EigenvalueInterpretationScene2(m.Scene):
+    """18 Геометрическая интерпретация разных значений собственных чисел (учебный стиль)"""
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.camera.background_color = m.WHITE
+
+    def construct(self):
+        # Заголовок (единый стиль с другими сценами)
+        title = m.Text("Геометрическая интерпретация собственных значений", 
+                       font_size=28, color=m.DARK_GRAY)
+        title.to_edge(m.UP, buff=0.7)
+        self.play(m.Write(title), run_time=1)
+        self.wait(0.3)
+
+        # Собственный вектор вдоль оси X (инвариантное направление)
+        eigen_vec = np.array([2, 0])
+
+        cases = [
+            (2.0,  "λ = 2   (растяжение)"),
+            (0.5,  "λ = 0.5 (сжатие)"),
+            (1.0,  "λ = 1   (без изменений)"),
+            (0.0,  "λ = 0   (коллапс в линию)"),
+            (-1.0, "λ = −1  (разворот на 180°)")
+        ]
+
+        for lam, desc in cases:
+            mat = np.array([[lam, 0], [0, 1]])
+
+            # 1. Крупная матрица-якорь (учебный стиль: сверху, чётко)
+            mat_obj = m.Matrix(mat, element_to_mobject_config={"color": m.DARK_GRAY, "font_size": 28})
+            mat_obj.get_brackets().set_color(m.BLACK)
+            mat_obj.scale(1.1)
+            mat_obj.move_to([-3.5, 1.0, 0])
+            self.play(m.Create(mat_obj), run_time=0.5)
+
+            # 2. Основная сетка (будет трансформироваться)
+            plane = m.NumberPlane(
+                x_range=[-4, 4, 1], y_range=[-4, 4, 1],
+                background_line_style={"stroke_color": m.GRAY, "stroke_width": 1.2},
+                axis_config={"stroke_color": m.DARK_GRAY, "stroke_width": 2}
+            )
+            self.play(m.FadeIn(plane), run_time=0.4)
+
+            # 3. Призрачная сетка (исходное состояние для сравнения)
+            ghost = plane.copy()
+            ghost.set_stroke(color=m.GRAY_E, opacity=0.25, width=1)
+            self.add(ghost)  # Добавляем статично
+
+            # 4. Собственный вектор (фиолетовый акцент)
+            v_eigen = m.Vector(eigen_vec, color=m.PURPLE, buff=0)
+            self.play(m.Create(v_eigen), run_time=0.5)
+
+            # Целевой вектор
+            target = m.Dot(color=m.PURPLE) if lam == 0 else m.Vector(mat @ eigen_vec, color=m.PURPLE)
+
+            # 5. Анимация: матрица действует на пространство
+            self.play(
+                plane.animate.apply_matrix(mat, about_point=m.ORIGIN),
+                m.Transform(v_eigen, target, path_arc=0),
+                run_time=2.3
+            )
+
+            # 6. Подпись (тёмная, учебная)
+            label = m.Text(desc, font_size=24, color=m.DARK_GRAY)
+            label.next_to(mat_obj, m.DOWN, buff=0.25)
+            self.play(m.FadeIn(label), run_time=0.3)
+            self.wait(1.0)
+
+            # 7. Очистка перед следующим кейсом
+            self.play(
+                m.FadeOut(plane), m.FadeOut(ghost), 
+                m.FadeOut(v_eigen), m.FadeOut(mat_obj), m.FadeOut(label),
+                run_time=0.6
+            )
+            self.wait(0.2)
+
+        self.play(m.FadeOut(title), run_time=0.5)
+        self.wait(1)
 
 class PCAPrincipalComponentScene(m.Scene):
     """19 Визуализация главных компонент: собственные векторы ковариационной матрицы"""
@@ -4210,10 +4552,162 @@ class MatrixPowersScene(m.Scene):
         self.play(m.FadeOut(*self.mobjects))'''
 
 
+class MatrixVectorMultiplicationScene(LinearTransformationScene_):
+    """22 Умножение матрицы на вектор: линейная комбинация столбцов"""
+    def __init__(self, **kwargs):
+        LinearTransformationScene_.__init__(
+            self,
+            show_coordinates=True,
+            leave_ghost_vectors=False,
+            show_basis_vectors=False,
+            foreground_plane_kwargs={
+                "x_range": [-4, 6, 1],
+                "y_range": [-2, 5, 1],  # Ваш диапазон
+                "x_length": 10,
+                "y_length": 7,
+                "background_line_style": {"stroke_color": m.GRAY_E, "stroke_width": 1}
+            },
+            background_plane_kwargs={
+                "x_range": [-4, 6, 1],
+                "y_range": [-2, 5, 1],
+                "x_length": 10,
+                "y_length": 7,
+                "background_line_style": {"stroke_color": m.GRAY_E, "stroke_width": 1}
+            },
+            **kwargs
+        )
+    
+    def construct(self):
+        # 1. Заголовок
+        '''title = m.Text("Умножение матрицы на вектор", font_size=36, color=m.BLACK)
+        title.to_edge(m.UP, buff=0.3)
+        self.add(title)'''
+        
+        # 2. Матрица A
+        matrix_data = np.array([[1.5, 0.5], [-0.3, 2.5]])
+        v = np.array([2, 1.5])
+        result = matrix_data @ v
+        
+        matrix_display = m.Matrix(matrix_data)
+        matrix_display.set_column_colors(m.GREEN, m.YELLOW)
+        matrix_display.to_edge(m.LEFT, buff=1.5).to_edge(m.UP, buff=0.8)
+        matrix_label = m.MathTex(r"A =", font_size=28, color=m.BLACK).next_to(matrix_display, m.LEFT, buff=0.2)
+        self.play(m.Create(matrix_label), m.Create(matrix_display), run_time=0.5)
+        self.wait()
+        
+        #  КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: берём реальную позицию (0,0) на экране
+        origin = self.plane.c2p(0, 0)
+        
+        col1 = np.array([matrix_data[0, 0], matrix_data[1, 0]])
+        col2 = np.array([matrix_data[0, 1], matrix_data[1, 1]])
+        
+        # Создаём стрелки вручную от правильного начала координат
+        arrow_col1 = m.Arrow(origin, self.plane.c2p(*col1), color=m.GREEN, buff=0)
+        arrow_col2 = m.Arrow(origin, self.plane.c2p(*col2), color=m.YELLOW, buff=0)
+        self.play(m.Create(arrow_col1), m.Create(arrow_col2), run_time=0.5)
+        
+        col1_label = m.MathTex(r"\vec{c}_1", font_size=24, color=m.GREEN)
+        col1_label.next_to(arrow_col1.get_end(), m.RIGHT, buff=0.2)
+        col2_label = m.MathTex(r"\vec{c}_2", font_size=24, color=m.YELLOW)
+        col2_label.next_to(arrow_col2.get_end(), m.RIGHT, buff=0.2)
+        self.play(m.Write(col1_label), m.Write(col2_label), run_time=0.5)
+        self.wait()
+        
+        # 4. Параллелограмм (все вершины привязаны к экранной сетке)
+        parallelogram = m.Polygon(
+            origin,
+            self.plane.c2p(*col1),
+            self.plane.c2p(*(col1 + col2)),
+            self.plane.c2p(*col2),
+            color=m.PURPLE,
+            fill_opacity=0.2,
+            stroke_width=3
+        )
+        self.play(m.Create(parallelogram), run_time=1)
+        self.wait()
+        
+        # 5. Вектор v
+        arrow_v = m.Arrow(origin, self.plane.c2p(*v), color=m.BLUE, buff=0)
+        self.play(m.Create(arrow_v), run_time=0.5)
+        
+        v_label = m.MathTex(r"\vec{v} = \begin{bmatrix} 2 \\ 1.5 \end{bmatrix}", 
+                            font_size=26, color=m.BLUE)
+        v_label.next_to(arrow_v.get_end(), m.RIGHT, buff=0.3)
+        self.play(m.Write(v_label), run_time=0.5)
+        self.wait()
+        
+        # 6. Формула умножения (теперь с квадратными скобками)
+        formula = m.MathTex(
+            r"A \cdot \vec{v} = \begin{bmatrix} 1.5 & 0.5 \\ -0.3 & 2.5 \end{bmatrix} \begin{bmatrix} 2 \\ 1.5 \end{bmatrix}",
+            font_size=24, color=m.BLACK
+        )
+        formula.next_to(matrix_display, m.DOWN, buff=0.5).align_to(matrix_display, m.LEFT)
+        self.play(m.Write(formula), run_time=1)
+        self.wait()
+        
+        # 7. Разложение (теперь с квадратными скобками)
+        decomposition = m.MathTex(
+            r"= 2 \begin{bmatrix} 1.5 \\ -0.3 \end{bmatrix} + 1.5 \begin{bmatrix} 0.5 \\ 2.5 \end{bmatrix}",
+            font_size=24, color=m.BLACK
+        )
+        decomposition.next_to(formula, m.DOWN, buff=0.2).align_to(formula, m.LEFT)
+        self.play(m.Write(decomposition), run_time=1)
+        self.wait()
+        
+        # 8. Масштабированные столбцы
+        scaled_col1 = v[0] * col1
+        scaled_col2 = v[1] * col2
+        
+        arrow_scaled1 = m.Arrow(origin, self.plane.c2p(*scaled_col1), color=m.GREEN, buff=0)
+        arrow_scaled2 = m.Arrow(origin, self.plane.c2p(*scaled_col2), color=m.YELLOW, buff=0)
+        self.play(m.Create(arrow_scaled1), m.Create(arrow_scaled2), run_time=0.5)
+        
+        coeff1 = m.MathTex(r"2 \cdot \vec{c}_1", font_size=22, color=m.GREEN)
+        coeff1.next_to(arrow_scaled1.get_end(), m.RIGHT, buff=0.2)
+        coeff2 = m.MathTex(r"1.5 \cdot \vec{c}_2", font_size=22, color=m.YELLOW)
+        coeff2.next_to(arrow_scaled2.get_end(), m.RIGHT, buff=0.2)
+        self.play(m.Write(coeff1), m.Write(coeff2), run_time=0.5)
+        self.wait()
+        
+        # 9. Сложение векторов (вектор-копия сразу создаётся в нужной позиции)
+        sum_vector = scaled_col1 + scaled_col2
+        
+        arrow_scaled2_copy = m.Arrow(
+            start=self.plane.c2p(*scaled_col1), 
+            end=self.plane.c2p(*sum_vector),
+            color=m.YELLOW, stroke_width=5, buff=0
+        )
+        self.play(m.Create(arrow_scaled2_copy), run_time=1)
+        
+        arrow_sum = m.Arrow(origin, self.plane.c2p(*sum_vector), color=m.RED, buff=0)
+        self.play(m.Create(arrow_sum), run_time=0.5)
+        
+        # 10. Результат
+        result_formula = m.MathTex(
+            r"= \begin{bmatrix} 3.75 \\ 3.15 \end{bmatrix}",
+            font_size=26, color=m.RED
+        )
+        result_formula.next_to(decomposition, m.DOWN, buff=0.2).align_to(decomposition, m.LEFT)
+        self.play(m.Write(result_formula), run_time=1)
+        
+        result_label = m.MathTex(r"\vec{w} = A\vec{v}", font_size=26, color=m.RED)
+        result_label.next_to(arrow_sum.get_end(), m.RIGHT, buff=0.3)
+        self.play(m.Write(result_label), run_time=0.5)
+        
+        # 11. Финальное объяснение
+        explanation = m.Text(
+            "Умножение матрицы на вектор = линейная комбинация столбцов",
+            font_size=24, color=m.BLACK
+        )
+        explanation.to_edge(m.DOWN, buff=0.7)
+        self.play(m.Write(explanation), run_time=1)
+        
+        self.wait(3)
+
 if __name__ == '__main__':
     import os
     from pathlib import Path
-
+ 
     SCENES = [
         #"LTExample",
         #"LT3D",
@@ -4236,6 +4730,7 @@ if __name__ == '__main__':
         #"DeterminantVolumeScale",
         #'MatrixVectorMult',
         #'RotationPlane2D',
+        #'RotationCompositionScene',
         #'ReflectionMatrixScene',
         #'ReflectionLineScene',
         #'PermutationMatrixScene',
@@ -4248,13 +4743,14 @@ if __name__ == '__main__':
         #'CovarianceRegularizationScene',
         #'InverseMatrixScene',
         #'RotationInverseScene',
-        #'DegenerateMatrixScene',
+        'DegenerateMatrixScene',
         #'EigenvectorScene',
         #'EigenvalueCollapseScene',
-        #'EigenvalueInterpretationScene',
+        #'EigenvalueInterpretationScene2',
         #"PCAPrincipalComponentScene",
         #"SpectralDecompositionScene",
-        "MatrixPowersScene"
+        #"MatrixPowersScene",
+        #'MatrixVectorMultiplicationScene',
     ]
     file_path = Path(__file__).resolve()
 
