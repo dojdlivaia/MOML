@@ -1124,6 +1124,142 @@ class VectorFieldDeformation(Scene_):
         self.play(m.Write(note), run_time=0.8)
 
         self.wait(2)
+
+class VectorFieldDeformation2(Scene_):
+    """
+    Глава 4, Анимация 8: Деформация пространства нелинейным отображением.
+    С эффектом "луковой шелухи" — исходное положение остаётся бледным фоном.
+    """
+    def construct(self):
+        # 1. Координатная плоскость
+        axes = m.Axes(
+            x_range=[-4, 4, 1],
+            y_range=[-2.5, 2.5, 0.5],
+            x_length=9,
+            y_length=5.5,
+            axis_config={"color": m.GRAY, "stroke_width": 1.5, "include_tip": False},
+            x_axis_config={"numbers_to_include": [-3, -2, -1, 0, 1, 2, 3], "font_size": 18},
+            y_axis_config={"numbers_to_include": [-2, -1, 0, 1, 2], "font_size": 18},
+        )
+        axes.shift(m.DOWN * 0.6)
+
+        self.play(m.Create(axes), run_time=0.8)
+        self.wait(0.2)
+
+        # 2. Параметры сетки
+        x_vals = np.arange(-3, 4, 1)
+        y_vals = np.arange(-2, 3, 1)
+        n_points = 80
+
+        # 3. Отображение
+        def f(x, y):
+            new_x = x + 0.5 * np.sin(y)
+            new_y = y + 0.3 * x**2 / (1 + x**2)
+            return new_x, new_y
+
+        # 4. Создаём линии
+        grid_lines = m.VGroup()
+        deformed_lines = m.VGroup()
+
+        # Вертикальные линии
+        for x in x_vals:
+            ys = np.linspace(-2.5, 2.5, n_points)
+            
+            orig_points = [axes.coords_to_point(x, y) for y in ys]
+            orig_line = m.VMobject()
+            orig_line.set_points_as_corners(orig_points)
+            orig_line.set_color(m.BLUE)
+            orig_line.set_stroke(width=1.5, opacity=0.7)
+            grid_lines.add(orig_line)
+            
+            def_points = [axes.coords_to_point(*f(x, y)) for y in ys]
+            def_line = m.VMobject()
+            def_line.set_points_as_corners(def_points)
+            def_line.set_color(m.BLUE)
+            def_line.set_stroke(width=1.5, opacity=0.7)
+            deformed_lines.add(def_line)
+
+        # Горизонтальные линии
+        for y in y_vals:
+            xs = np.linspace(-3, 3, n_points)
+            
+            orig_points = [axes.coords_to_point(x, y) for x in xs]
+            orig_line = m.VMobject()
+            orig_line.set_points_as_corners(orig_points)
+            orig_line.set_color(m.BLUE)
+            orig_line.set_stroke(width=1.5, opacity=0.7)
+            grid_lines.add(orig_line)
+            
+            def_points = [axes.coords_to_point(*f(x, y)) for x in xs]
+            def_line = m.VMobject()
+            def_line.set_points_as_corners(def_points)
+            def_line.set_color(m.BLUE)
+            def_line.set_stroke(width=1.5, opacity=0.7)
+            deformed_lines.add(def_line)
+
+        self.play(m.Create(grid_lines), run_time=1.5)
+        self.wait(0.3)
+
+        # 5. Узлы сетки
+        node_points = []
+        deformed_node_points = []
+        for x in x_vals:
+            for y in y_vals:
+                node_points.append(m.Dot(
+                    axes.coords_to_point(x, y),
+                    color=m.BLUE_A,
+                    radius=0.05,
+                    fill_opacity=0.8,
+                ))
+                nx, ny = f(x, y)
+                deformed_node_points.append(m.Dot(
+                    axes.coords_to_point(nx, ny),
+                    color=m.BLUE_A,
+                    radius=0.05,
+                    fill_opacity=0.8,
+                ))
+        
+        nodes = m.VGroup(*node_points)
+        deformed_nodes = m.VGroup(*deformed_node_points)
+
+        self.play(m.Create(nodes), run_time=0.8)
+        self.wait(0.3)
+
+        # 6. Формула — на месте, где раньше был title (чуть выше центра верхней части)
+        formula = m.MathTex(
+            r"f(x,y) = \left(x + \tfrac{1}{2}\sin y,\; y + \tfrac{0.3x^2}{1+x^2}\right)",
+            font_size=24,
+            color=m.BLACK,
+        )
+        formula.to_edge(m.UP, buff=0.8)  # ← было -0.12, теперь 0.5 (ниже)
+
+        self.play(m.Write(formula), run_time=0.9)
+        self.wait(0.3)
+
+        # 7. Создаём "призрачные" копии исходных объектов для эффекта луковой шелухи
+        ghost_grid = grid_lines.copy()
+        ghost_grid.set_stroke(opacity=0.2)  # очень бледные
+        
+        ghost_nodes = nodes.copy()
+        ghost_nodes.set_fill(opacity=0.2)
+
+        # 8. Анимация деформации с луковой шелухой
+        self.play(
+            # Показываем призрачные копии на месте
+            m.FadeIn(ghost_grid, run_time=0.5),
+            m.FadeIn(ghost_nodes, run_time=0.5),
+        )
+        self.wait(0.3)
+        
+        # Трансформируем основные объекты, призраки остаются
+        self.play(
+            m.Transform(grid_lines, deformed_lines),
+            m.Transform(nodes, deformed_nodes),
+            run_time=4,
+            rate_func=m.smooth,
+        )
+        self.wait(2)
+
 # ========== НАСТРОЙКА ДЛЯ РЕНДЕРИНГА ==========
 
 # Устанавливаем директорию для вывода
@@ -1142,7 +1278,7 @@ if __name__ == '__main__':
         #"ConvergenceRates",
         #"ConvexityDefinition",
         #"ParametricCircle",
-        "VectorFieldDeformation"
+        "VectorFieldDeformation2"
         # Здесь будут другие сцены из главы 4
     ]
     
