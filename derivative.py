@@ -1018,6 +1018,903 @@ class NewtonMethod(Scene_):
             label_0 = vertex_label
 
         self.wait(2)
+
+class PartialDerivatives(ThreeDScene_):
+    """
+    Глава 4, Анимация 9: Частные производные.
+    Трёхмерная поверхность f(x, y) = 0.5·(x² + y²) с двумя кривыми:
+    красная — при фиксированном y, синяя — при фиксированном x.
+    В точке пересечения показаны касательные к этим кривым.
+    """
+    def construct(self):
+        # 1. Трёхмерные оси
+        axes = m.ThreeDAxes(
+            x_range=[-3, 3, 1],
+            y_range=[-3, 3, 1],
+            z_range=[-0.5, 4, 1],
+            x_length=6,
+            y_length=6,
+            z_length=4,
+            axis_config={"color": m.GRAY, "stroke_width": 2, "include_tip": False},
+        )
+        # Опускаем всю систему координат ниже
+        axes.shift(m.DOWN * 2.0)
+
+        # 2. Поверхность f(x, y) = 0.5·(x² + y²)
+        def f(x, y):
+            return 0.5 * (x ** 2 + y ** 2)
+
+        surface = m.Surface(
+            lambda u, v: axes.c2p(u, v, f(u, v)),
+            u_range=[-2.5, 2.5],
+            v_range=[-2.5, 2.5],
+            resolution=(30, 30),
+            fill_opacity=0.35,
+            stroke_width=0.5,
+            stroke_opacity=0.4,
+            fill_color=m.BLUE_E,
+        )
+
+        # 3. Фиксированные значения x₀ и y₀
+        x0 = 1.0
+        y0 = -1.2
+
+        z0 = f(x0, y0)
+        point_3d = axes.c2p(x0, y0, z0)
+        point_dot = m.Dot3D(point_3d, color=m.YELLOW, radius=0.08)
+
+        # 4. Красная кривая: при фиксированном y = y0
+        curve_red = m.ParametricFunction(
+            lambda t: axes.c2p(t, y0, f(t, y0)),
+            t_range=[-2.5, 2.5, 0.05],
+            color=m.RED,
+            stroke_width=4,
+        )
+
+        # 5. Синяя кривая: при фиксированном x = x0
+        curve_blue = m.ParametricFunction(
+            lambda t: axes.c2p(x0, t, f(x0, t)),
+            t_range=[-2.5, 2.5, 0.05],
+            color=m.BLUE,
+            stroke_width=4,
+        )
+
+        # 6. Касательные
+        df_dx = x0
+        df_dy = y0
+
+        tangent_red_len = 1.5
+        tangent_red = m.Line3D(
+            start=axes.c2p(x0 - tangent_red_len, y0, z0 - df_dx * tangent_red_len),
+            end=axes.c2p(x0 + tangent_red_len, y0, z0 + df_dx * tangent_red_len),
+            color=m.RED_A,
+            stroke_width=5,
+        )
+
+        tangent_blue_len = 1.5
+        tangent_blue = m.Line3D(
+            start=axes.c2p(x0, y0 - tangent_blue_len, z0 - df_dy * tangent_blue_len),
+            end=axes.c2p(x0, y0 + tangent_blue_len, z0 + df_dy * tangent_blue_len),
+            color=m.BLUE_A,
+            stroke_width=5,
+        )
+
+        # 7. 3D-подписи
+        red_label = m.MathTex(r"y = y_0", color=m.RED, font_size=26)
+        red_label.move_to(axes.c2p(2.3, y0, f(2.3, y0) + 0.3))
+
+        blue_label = m.MathTex(r"x = x_0", color=m.BLUE, font_size=26)
+        blue_label.move_to(axes.c2p(x0, 2.3, f(x0, 2.3) + 0.3))
+
+        point_label = m.MathTex(r"(x_0, y_0)", color=m.YELLOW, font_size=24)
+        point_label.move_to(axes.c2p(x0, y0, z0 + 0.4))
+
+        # 8. Формула — в левом нижнем углу
+        formula = m.MathTex(
+            r"\frac{\partial f}{\partial x}\bigg|_{(x_0, y_0)} = " + f"{df_dx:.2f}"
+            + r",\quad \frac{\partial f}{\partial y}\bigg|_{(x_0, y_0)} = " + f"{df_dy:.2f}",
+            font_size=24,
+            color=m.BLACK,
+        )
+        formula.to_corner(m.DL, buff=0.5)
+
+        # 9. Заголовок — под формулой
+        title = m.Text(
+            "Частные производные: наклон вдоль осей",
+            font_size=22,
+            color=m.BLACK,
+        )
+        title.next_to(formula, m.UP, buff=0.8)
+        title.align_to(formula, m.LEFT)
+
+        # 10. Пояснительная подпись — справа внизу
+        note = m.Text(
+            "Красная касательная — ∂f/∂x, синяя — ∂f/∂y",
+            font_size=20,
+            color=m.BLACK,
+        )
+        note.to_corner(m.DR, buff=0.5)
+
+        # ========== АНИМАЦИЯ ==========
+        self.set_camera_orientation(phi=65 * m.DEGREES, theta=-55 * m.DEGREES, zoom=0.75)
+
+        # 1. Оси
+        self.play(m.Create(axes), run_time=1)
+        self.wait(0.2)
+
+        # 2. Поверхность
+        self.play(m.Create(surface), run_time=2)
+        self.wait(0.3)
+
+        # 3. Точка
+        self.play(m.Create(point_dot), run_time=0.5)
+        self.wait(0.2)
+
+        # 4. Красная кривая
+        self.play(m.Create(curve_red), run_time=1.5)
+        self.wait(0.2)
+
+        # 5. Синяя кривая
+        self.play(m.Create(curve_blue), run_time=1.5)
+        self.wait(0.2)
+
+        # 6. Касательные
+        self.play(m.Create(tangent_red), run_time=0.8)
+        self.play(m.Create(tangent_blue), run_time=0.8)
+        self.wait(0.3)
+
+        # 7. 3D-подписи
+        self.play(
+            m.Write(red_label),
+            m.Write(blue_label),
+            m.Write(point_label),
+            run_time=0.8,
+        )
+        self.wait(0.3)
+
+        # 8. Формула, заголовок и подпись на экране
+        self.add_fixed_in_frame_mobjects(formula, title, note)
+        self.play(m.Write(formula), m.Write(title), m.Write(note), run_time=0.8)
+        self.wait(0.3)
+
+        # 9. Вращение камеры
+        self.begin_ambient_camera_rotation(rate=0.15)
+        self.wait(5)
+        self.stop_ambient_camera_rotation()
+
+        self.wait(1)
+
+class PartialDerivatives2(ThreeDScene_):
+    """
+    Глава 6, Анимация 1: Частные производные.
+    Трёхмерная поверхность с двумя кривыми (при фиксированных x и y)
+    и касательными в точке пересечения.
+    """
+    def construct(self):
+        # 1. Оси
+        axes = m.ThreeDAxes(
+            x_range=[-3, 3, 1],
+            y_range=[-3, 3, 1],
+            z_range=[-2, 2, 1],
+            x_length=6,
+            y_length=6,
+            z_length=4,
+            axis_config={"color": m.GRAY, "stroke_width": 2, "include_tip": False},
+        )
+        axes.shift(m.DOWN * 0.5)  # было 1.8 — подняли на 0.7
+
+        # 2. Бугристая поверхность
+        def f(x, y):
+            return 0.5 * np.sin(x) * np.cos(y) + 0.1 * x * y
+
+        surface = m.Surface(
+            lambda u, v: axes.c2p(u, v, f(u, v)),
+            u_range=[-3, 3],
+            v_range=[-3, 3],
+            resolution=(60, 60),
+            fill_opacity=0.45,
+            stroke_width=0.3,
+            stroke_opacity=0.3,
+            fill_color=m.BLUE_E,
+        )
+
+        # 3. Точка пересечения
+        x0 = 1.0
+        y0 = -0.8
+        z0 = f(x0, y0)
+
+        point_dot = m.Dot3D(axes.c2p(x0, y0, z0), color=m.YELLOW, radius=0.08)
+
+        # 4. Кривые сечений
+        curve_red = m.ParametricFunction(
+            lambda t: axes.c2p(t, y0, f(t, y0)),
+            t_range=[-3, 3, 0.02],
+            color=m.RED,
+            stroke_width=4,
+        )
+
+        curve_blue = m.ParametricFunction(
+            lambda t: axes.c2p(x0, t, f(x0, t)),
+            t_range=[-3, 3, 0.02],
+            color=m.BLUE,
+            stroke_width=4,
+        )
+
+        # 5. Частные производные
+        df_dx = 0.5 * np.cos(x0) * np.cos(y0) + 0.1 * y0
+        df_dy = -0.5 * np.sin(x0) * np.sin(y0) + 0.1 * x0
+
+        # 6. Касательные как параметрические прямые
+        tangent_red_len = 1.5
+        tangent_red = m.ParametricFunction(
+            lambda t: axes.c2p(
+                x0 + t,
+                y0,
+                z0 + df_dx * t,
+            ),
+            t_range=[-tangent_red_len, tangent_red_len, 0.05],
+            color=m.RED_A,
+            stroke_width=6,
+        )
+
+        tangent_blue_len = 1.5
+        tangent_blue = m.ParametricFunction(
+            lambda t: axes.c2p(
+                x0,
+                y0 + t,
+                z0 + df_dy * t,
+            ),
+            t_range=[-tangent_blue_len, tangent_blue_len, 0.05],
+            color=m.BLUE_A,
+            stroke_width=6,
+        )
+
+        # 7. Подписи к кривым
+        red_label = m.MathTex(r"y = y_0", color=m.RED, font_size=24)
+        red_label.move_to(axes.c2p(2.5, y0, f(2.5, y0) + 0.3))
+
+        blue_label = m.MathTex(r"x = x_0", color=m.BLUE, font_size=24)
+        blue_label.move_to(axes.c2p(x0, 2.5, f(x0, 2.5) + 0.3))
+
+        point_label = m.MathTex(r"(x_0, y_0)", color=m.YELLOW, font_size=22)
+        point_label.move_to(axes.c2p(x0, y0, z0 + 0.35))
+
+        # 8. Формула
+
+        title = m.Text(
+            "Наклон красной касательной — ∂f/∂x, синей — ∂f/∂y",
+            font_size=22,
+            color=m.BLACK,
+        )
+        title.to_corner(m.UL, buff=0.8)  
+
+        # ========== АНИМАЦИЯ ==========
+        self.set_camera_orientation(phi=65 * m.DEGREES, theta=-55 * m.DEGREES, zoom=0.75)
+
+        self.play(m.Create(axes), run_time=1)
+        self.play(m.Create(surface), run_time=2)
+        self.wait(0.3)
+
+        # Точка (первое появление — маленькая, полупрозрачная)
+        point_dot.set_opacity(0.4)
+        self.play(m.Create(point_dot), run_time=0.5)
+        self.wait(0.2)
+
+        self.play(m.Create(curve_red), run_time=1.2)
+        self.play(m.Create(curve_blue), run_time=1.2)
+        self.wait(0.3)
+
+        self.play(m.Create(tangent_red), run_time=0.8)
+        self.play(m.Create(tangent_blue), run_time=0.8)
+        self.wait(0.3)
+
+        # Акцентная точка — перерисовываем поверх всего
+        '''accent_dot = m.Dot3D(axes.c2p(x0, y0, z0), color=m.YELLOW, radius=0.14)
+        accent_ring = m.Circle(
+            radius=0.25,
+            color=m.YELLOW,
+            stroke_width=3,
+        ).move_to(axes.c2p(x0, y0, z0))
+        # Кольцо нужно повернуть в плоскость, но в 3D это сложно —
+        # используем Dot3D побольше + меньший контрастный внутри
+        accent_inner = m.Dot3D(axes.c2p(x0, y0, z0), color=m.YELLOW, radius=0.16)
+
+        self.play(
+            m.FadeIn(accent_dot),
+            m.FadeIn(accent_inner),
+            run_time=0.6,
+        )
+        self.wait(0.3)'''
+
+        # Подписи к кривым и точке
+        self.play(
+            m.Write(red_label),
+            m.Write(blue_label),
+            m.Write(point_label),
+            run_time=0.8,
+        )
+        self.wait(0.3)
+
+        # Формула и заголовок
+        self.add_fixed_in_frame_mobjects( title)
+        self.play(m.Write(title), run_time=0.3)
+        self.wait(0.3)
+
+        # Вращение камеры
+        self.begin_ambient_camera_rotation(rate=0.15)
+        self.wait(6)
+        self.stop_ambient_camera_rotation()
+
+        self.wait(1)
+
+class GradientVsNewton(Scene_):
+    """
+    Глава 4, Анимация 10: Градиентный спуск vs метод Ньютона.
+    На карте уровней эллиптической функции потерь показаны два пути
+    из одной стартовой точки к минимуму:
+    - длинный зигзагообразный путь градиентного спуска (красный),
+    - короткий почти прямой путь метода Ньютона (синий).
+    """
+    def construct(self):
+        # 1. Функция потерь: эллиптическая квадратичная форма
+        # f(x, y) = 0.5 * (a*x^2 + b*y^2), где a >> b — вытянутая чаша
+        a = 4.0
+        b = 0.25
+
+        def f(x, y):
+            return 0.5 * (a * x ** 2 + b * y ** 2)
+
+        # Градиент
+        def grad_f(x, y):
+            return np.array([a * x, b * y])
+
+        # Гессиан (постоянный)
+        H = np.array([[a, 0], [0, b]])
+        H_inv = np.linalg.inv(H)
+
+        # 2. Координатная плоскость
+        axes = m.Axes(
+            x_range=[-2.5, 2.5, 0.5],
+            y_range=[-2.5, 2.5, 0.5],
+            x_length=8,
+            y_length=8,
+            axis_config={"color": m.GRAY, "stroke_width": 1.5, "include_tip": False},
+            x_axis_config={"numbers_to_include": [-2, -1, 0, 1, 2], "font_size": 18},
+            y_axis_config={"numbers_to_include": [-2, -1, 0, 1, 2], "font_size": 18},
+        )
+        axes.shift(m.DOWN * 0.3)
+
+        self.play(m.Create(axes), run_time=0.8)
+        self.wait(0.2)
+
+        # 3. Карта уровней (контурные эллипсы)
+        levels = [0.1, 0.3, 0.6, 1.0, 1.6, 2.4, 3.5, 5.0]
+
+        contour_lines = m.VGroup()
+        for level in levels:
+            # Эллипс: a*x^2 + b*y^2 = 2*level
+            # x^2 / (2*level/a) + y^2 / (2*level/b) = 1
+            rx = np.sqrt(2 * level / a)
+            ry = np.sqrt(2 * level / b)
+            ellipse = m.Ellipse(
+                width=2 * rx * axes.x_axis.unit_size,
+                height=2 * ry * axes.y_axis.unit_size,
+                color=m.BLUE_E,
+                stroke_width=1.5,
+                stroke_opacity=0.6,
+            )
+            ellipse.move_to(axes.coords_to_point(0, 0))
+            contour_lines.add(ellipse)
+
+        self.play(m.Create(contour_lines), run_time=1.5)
+        self.wait(0.3)
+
+        # 4. Минимум (в начале координат)
+        minimum_dot = m.Dot(axes.coords_to_point(0, 0), color=m.YELLOW, radius=0.1)
+        minimum_label = m.Text("минимум", font_size=20, color=m.YELLOW)
+        minimum_label.next_to(minimum_dot, m.UR, buff=0.15)
+
+        self.play(m.Create(minimum_dot), m.Write(minimum_label), run_time=0.5)
+        self.wait(0.3)
+
+        # 5. Стартовая точка
+        start = np.array([-2.0, 1.8])
+        start_point = axes.coords_to_point(start[0], start[1])
+        start_dot = m.Dot(start_point, color=m.WHITE, radius=0.1)
+        start_label = m.Text("старт", font_size=20, color=m.WHITE)
+        start_label.next_to(start_dot, m.UL, buff=0.15)
+
+        self.play(m.Create(start_dot), m.Write(start_label), run_time=0.5)
+        self.wait(0.3)
+
+        # ========== 6. Градиентный спуск ==========
+        lr_gd = 0.4  # шаг градиентного спуск
+        n_steps_gd = 25
+
+        gd_path = [start.copy()]
+        p = start.copy()
+        for _ in range(n_steps_gd):
+            g = grad_f(p[0], p[1])
+            p = p - lr_gd * g
+            gd_path.append(p.copy())
+
+        # Преобразуем в точки на сцене
+        gd_screen_points = [axes.coords_to_point(pt[0], pt[1]) for pt in gd_path]
+
+        # Линия градиентного спуска
+        gd_line = m.VMobject()
+        gd_line.set_points_as_corners(gd_screen_points)
+        gd_line.set_color(m.RED)
+        gd_line.set_stroke(width=2.5)
+
+        # Точки на каждом шаге
+        gd_dots = m.VGroup(*[
+            m.Dot(pt, color=m.RED, radius=0.05) for pt in gd_screen_points[1:]
+        ])
+
+        # Метка
+        gd_label = m.Text(
+            f"Градиентный спуск ({n_steps_gd} шагов)",
+            font_size=22, color=m.RED,
+        )
+        gd_label.to_corner(m.UL, buff=0.4)
+
+        # ========== 7. Метод Ньютона ==========
+        # Ньютон: p_{k+1} = p_k - H^{-1} * grad_f(p_k)
+        newton_path = [start.copy()]
+        p = start.copy()
+        for _ in range(6):
+            g = grad_f(p[0], p[1])
+            p = p - H_inv @ g
+            newton_path.append(p.copy())
+
+        newton_screen_points = [axes.coords_to_point(pt[0], pt[1]) for pt in newton_path]
+
+        newton_line = m.VMobject()
+        newton_line.set_points_as_corners(newton_screen_points)
+        newton_line.set_color(m.BLUE)
+        newton_line.set_stroke(width=2.5)
+
+        newton_dots = m.VGroup(*[
+            m.Dot(pt, color=m.BLUE, radius=0.05) for pt in newton_screen_points[1:]
+        ])
+
+        newton_label = m.Text(
+            f"Метод Ньютона ({len(newton_path) - 1} шагов)",
+            font_size=22, color=m.BLUE,
+        )
+        newton_label.to_corner(m.UR, buff=0.4)
+
+        # ========== 8. Заголовок ==========
+        title = m.Text(
+            "Градиентный спуск vs метод Ньютона",
+            font_size=28, color=m.BLACK,
+        )
+        title.to_edge(m.UP, buff=0.3)
+
+        note = m.Text(
+            "Эллиптическая функция потерь: f(x, y) = 2x² + 0.125y²",
+            font_size=20, color=m.BLACK,
+        )
+        note.to_edge(m.DOWN, buff=0.3)
+
+        # ========== АНИМАЦИЯ ==========
+        self.play(m.Write(title), m.Write(note), run_time=0.8)
+        self.wait(0.3)
+
+        # Градиентный спуск
+        self.play(
+            m.Create(gd_line),
+            *[m.Create(d) for d in gd_dots],
+            run_time=3,
+            rate_func=m.linear,
+        )
+        self.play(m.Write(gd_label), run_time=0.5)
+        self.wait(0.5)
+
+        # Метод Ньютона
+        self.play(
+            m.Create(newton_line),
+            *[m.Create(d) for d in newton_dots],
+            run_time=2,
+            rate_func=m.linear,
+        )
+        self.play(m.Write(newton_label), run_time=0.5)
+        self.wait(0.5)
+
+        # Финальный вывод
+        conclusion = m.Text(
+            "Ньютон использует кривизну и приходит за 1 шаг",
+            font_size=22, color=m.YELLOW,
+        )
+        conclusion.to_edge(m.DOWN, buff=0.8)
+        self.play(m.Write(conclusion), run_time=0.8)
+
+        self.wait(2)
+
+class GradientVsNewton3D(ThreeDScene_):
+    """
+    Глава 4, Анимация 10: Градиентный спуск vs метод Ньютона.
+    В 3D-пространстве нарисованы концентрические эллипсы (карта уровней).
+    Два шарика скатываются к минимуму:
+    - красный зигзагом (градиентный спуск),
+    - синий почти прямо (метод Ньютона).
+    За шариками остаётся исчезающий след.
+    """
+    def construct(self):
+        # 1. Функция потерь
+        a = 4.0
+        b = 0.25
+
+        def f(x, y):
+            return 0.5 * (a * x ** 2 + b * y ** 2)
+
+        def grad_f(x, y):
+            return np.array([a * x, b * y])
+
+        H = np.array([[a, 0], [0, b]])
+        H_inv = np.linalg.inv(H)
+
+        # 2. Трёхмерные оси
+        axes = m.ThreeDAxes(
+            x_range=[-2.5, 2.5, 0.5],
+            y_range=[-2.5, 2.5, 0.5],
+            z_range=[0, 6, 1],
+            x_length=7,
+            y_length=7,
+            z_length=4,
+            axis_config={"color": m.GRAY, "stroke_width": 1.5, "include_tip": False},
+        )
+        # Опускаем всю сцену ниже
+        axes.shift(m.DOWN * 1.5)
+
+        # 3. Карта уровней в 3D — эллипсы на разной высоте z
+        levels = [0.3, 0.8, 1.5, 2.5, 4.0, 5.5]
+        contour_lines = m.VGroup()
+        for level in levels:
+            rx = np.sqrt(2 * level / a)
+            ry = np.sqrt(2 * level / b)
+            ellipse = m.ParametricFunction(
+                lambda t, rx=rx, ry=ry, level=level: axes.c2p(
+                    rx * np.cos(t), ry * np.sin(t), level
+                ),
+                t_range=[0, 2 * np.pi, 0.05],
+                color=m.BLUE_D,
+                stroke_width=2,
+                stroke_opacity=0.7,
+            )
+            contour_lines.add(ellipse)
+
+        # 4. Минимум и старт
+        minimum_dot = m.Dot3D(axes.c2p(0, 0, 0), color=m.YELLOW, radius=0.09)
+        minimum_label = m.Text("минимум", font_size=18, color=m.YELLOW)
+        minimum_label.move_to(axes.c2p(0.4, 0.4, 0.4))
+
+        start = np.array([-2.0, 1.8])
+        z_start = f(start[0], start[1])
+        start_dot = m.Dot3D(axes.c2p(start[0], start[1], z_start),
+                             color=m.WHITE, radius=0.09)
+        start_label = m.Text("старт", font_size=18, color=m.WHITE)
+        start_label.move_to(axes.c2p(start[0], start[1] + 0.3, z_start + 0.4))
+
+        # ========== 5. Градиентный спуск ==========
+        lr_gd = 0.4
+        n_steps_gd = 25
+
+        gd_path = [start.copy()]
+        p = start.copy()
+        for _ in range(n_steps_gd):
+            g = grad_f(p[0], p[1])
+            p = p - lr_gd * g
+            gd_path.append(p.copy())
+
+        gd_3d_points = [
+            axes.c2p(pt[0], pt[1], f(pt[0], pt[1])) for pt in gd_path
+        ]
+        gd_line = m.VMobject()
+        gd_line.set_points_as_corners(gd_3d_points)
+        gd_line.set_color(m.RED)
+        gd_line.set_stroke(width=3)
+
+        # ========== 6. Метод Ньютона ==========
+        newton_path = [start.copy()]
+        p = start.copy()
+        for _ in range(6):
+            g = grad_f(p[0], p[1])
+            p = p - H_inv @ g
+            newton_path.append(p.copy())
+
+        newton_3d_points = [
+            axes.c2p(pt[0], pt[1], f(pt[0], pt[1])) for pt in newton_path
+        ]
+        newton_line = m.VMobject()
+        newton_line.set_points_as_corners(newton_3d_points)
+        newton_line.set_color(m.BLUE)
+        newton_line.set_stroke(width=3)
+
+        # ========== 7. Шарики и исчезающий след ==========
+        # Шарики
+        gd_ball = m.Sphere(radius=0.1, color=m.RED).move_to(
+            axes.c2p(start[0], start[1], z_start)
+        )
+        newton_ball = m.Sphere(radius=0.1, color=m.BLUE).move_to(
+            axes.c2p(start[0], start[1], z_start)
+        )
+
+        # Исчезающий след: маленькие точки, оставляемые за шариком
+        # Для градиентного спуска
+        gd_trail_dots = []
+        for pt in gd_path[::2]:  # берём каждую вторую точку
+            dot = m.Dot3D(
+                axes.c2p(pt[0], pt[1], f(pt[0], pt[1])),
+                color=m.RED,
+                radius=0.05,
+            )
+            dot.set_opacity(0)
+            gd_trail_dots.append(dot)
+
+        # Для метода Ньютона
+        newton_trail_dots = []
+        for pt in newton_path:
+            dot = m.Dot3D(
+                axes.c2p(pt[0], pt[1], f(pt[0], pt[1])),
+                color=m.BLUE,
+                radius=0.05,
+            )
+            dot.set_opacity(0)
+            newton_trail_dots.append(dot)
+
+        # ========== 8. Текстовые подписи ==========
+        title = m.Text(
+            "Градиентный спуск vs метод Ньютона",
+            font_size=26, color=m.BLACK,
+        )
+        title.to_edge(m.UP, buff=0.3)
+
+        note = m.Text(
+            "f(x, y) = 2x² + 0.125y²",
+            font_size=20, color=m.BLACK,
+        )
+        note.to_corner(m.DR, buff=0.4)
+
+        gd_label = m.Text("градиентный спуск", font_size=20, color=m.RED)
+        gd_label.to_corner(m.UL, buff=0.4)
+
+        newton_label = m.Text("метод Ньютона", font_size=20, color=m.BLUE)
+        newton_label.next_to(gd_label, m.DOWN, buff=0.1)
+        newton_label.align_to(gd_label, m.LEFT)
+
+        # ========== АНИМАЦИЯ ==========
+        self.set_camera_orientation(phi=65 * m.DEGREES, theta=-55 * m.DEGREES, zoom=0.7)
+        self.add_fixed_in_frame_mobjects(title, note, gd_label, newton_label)
+
+        # 1. Оси и эллипсы
+        self.play(m.Create(axes), run_time=1)
+        self.wait(0.2)
+        self.play(m.Create(contour_lines), run_time=2)
+        self.wait(0.2)
+
+        # 2. Минимум и старт
+        self.play(
+            m.Create(minimum_dot), m.Write(minimum_label),
+            m.Create(start_dot), m.Write(start_label),
+            run_time=0.8,
+        )
+        self.wait(0.3)
+
+        # 3. Подписи
+        self.play(m.Write(title), m.Write(note), run_time=0.5)
+        self.play(m.Write(gd_label), m.Write(newton_label), run_time=0.5)
+        self.wait(0.3)
+
+        # 4. Все точки следа на сцене (пока невидимые)
+        self.add(*gd_trail_dots, *newton_trail_dots)
+
+        # 5. Красный путь — градиентный спуск
+        self.add(gd_ball)
+        self.wait(0.3)
+
+        # Анимируем движение шарика по точкам, оставляя след
+        gd_animations = []
+        prev_dot = None
+        for i, pt in enumerate(gd_path):
+            if i % 2 == 0 and i // 2 < len(gd_trail_dots):
+                dot = gd_trail_dots[i // 2]
+                gd_animations.append(dot.animate.set_opacity(1))
+            gd_animations.append(
+                gd_ball.animate.move_to(
+                    axes.c2p(pt[0], pt[1], f(pt[0], pt[1]))
+                )
+            )
+
+        # Проигрываем всё разом
+        self.play(*gd_animations, run_time=4, rate_func=m.linear)
+        self.wait(0.3)
+
+        # 6. Синий путь — метод Ньютона
+        self.add(newton_ball)
+        self.wait(0.3)
+
+        newton_animations = []
+        for i, pt in enumerate(newton_path):
+            dot = newton_trail_dots[i]
+            newton_animations.append(dot.animate.set_opacity(1))
+            newton_animations.append(
+                newton_ball.animate.move_to(
+                    axes.c2p(pt[0], pt[1], f(pt[0], pt[1]))
+                )
+            )
+
+        self.play(*newton_animations, run_time=2, rate_func=m.linear)
+        self.wait(0.5)
+
+        # 7. Финальный вывод
+        conclusion = m.Text(
+            "Ньютон учитывает кривизну — почти прямая к минимуму",
+            font_size=20, color=m.YELLOW,
+        )
+        conclusion.to_edge(m.DOWN, buff=0.3)
+        self.add_fixed_in_frame_mobjects(conclusion)
+        self.play(m.Write(conclusion), run_time=0.8)
+
+        # 8. Медленное вращение камеры
+        self.begin_ambient_camera_rotation(rate=0.15)
+        self.wait(5)
+        self.stop_ambient_camera_rotation()
+
+        self.wait(1)
+class GradientDescentVsNewton(ThreeDScene_):
+    """
+    Глава 6, Анимация: Градиентный спуск vs метод Ньютона на карте уровней.
+    Показывает зигзагообразный путь градиентного спуска и прямой путь метода Ньютона.
+    """
+    def construct(self):
+        # 1. Координатная плоскость (2D)
+        axes = m.Axes(
+            x_range=[-4, 4, 1],
+            y_range=[-3, 3, 1],
+            x_length=10,
+            y_length=6,
+            axis_config={"color": m.GRAY, "stroke_width": 1.5, "include_tip": False},
+            x_axis_config={"numbers_to_include": [-3, -2, -1, 0, 1, 2, 3], "font_size": 18},
+            y_axis_config={"numbers_to_include": [-2, -1, 1, 2], "font_size": 18},
+        )
+        axes.shift(m.DOWN * 0.3)
+
+        self.play(m.Create(axes), run_time=1)
+        self.wait(0.3)
+
+        # 2. Функция потерь L(x,y) = x² + 4y² (эллиптическая)
+        # Контурные линии: x² + 4y² = c (эллипсы)
+        contour_levels = [1, 2, 4, 6, 8, 10]
+        contours = m.VGroup()
+        
+        for level in contour_levels:
+            # Параметризация эллипса: x = sqrt(level)*cos(t), y = sqrt(level/4)*sin(t)
+            ellipse = m.ParametricFunction(
+                lambda t, lv=level: np.array([
+                    np.sqrt(lv) * np.cos(t),
+                    np.sqrt(lv / 4) * np.sin(t),
+                    0
+                ]),
+                t_range=[0, 2 * np.pi],
+                color=m.BLUE_E,
+                stroke_width=1.5,
+                stroke_opacity=0.5,
+            )
+            contours.add(ellipse)
+
+        self.play(m.Create(contours), run_time=2)
+        self.wait(0.5)
+
+        # 3. Минимум функции (0, 0)
+        minimum = m.Dot(
+            axes.c2p(0, 0),
+            color=m.GREEN,
+            radius=0.12,
+        )
+        min_label = m.MathTex(
+            r"\text{min}",
+            font_size=20,
+            color=m.GREEN,
+        )
+        min_label.next_to(minimum, m.RIGHT, buff=0.2)
+
+        self.play(m.Create(minimum), m.Write(min_label), run_time=0.6)
+        self.wait(0.5)
+
+        # 4. Стартовая точка (-3, 2)
+        start_x, start_y = -3, 2
+        start_point = m.Dot(
+            axes.c2p(start_x, start_y),
+            color=m.WHITE,
+            radius=0.12,
+        )
+        start_label = m.MathTex(
+            r"(x_0, y_0)",
+            font_size=20,
+            color=m.WHITE,
+        )
+        start_label.next_to(start_point, m.UP + m.LEFT, buff=0.15)
+
+        self.play(m.Create(start_point), m.Write(start_label), run_time=0.6)
+        self.wait(0.5)
+
+        # 5. Траектория градиентного спуска (зигзаг)
+        # L(x,y) = x² + 4y², градиент = (2x, 8y)
+        # Шаг: (x_new, y_new) = (x - lr*2x, y - lr*8y)
+        lr = 0.12  # скорость обучения
+        gd_points = [(start_x, start_y)]
+        x, y = start_x, start_y
+        
+        for _ in range(15):  # 15 шагов
+            x_new = x - lr * 2 * x
+            y_new = y - lr * 8 * y
+            gd_points.append((x_new, y_new))
+            x, y = x_new, y_new
+
+        # Создать ломаную линию
+        gd_path = m.VMobject()
+        gd_path.set_points_smoothly([
+            axes.c2p(p[0], p[1]) for p in gd_points
+        ])
+        gd_path.set_color(m.RED)
+        gd_path.set_stroke(width=2.5)
+
+        gd_label = m.Text(
+            "градиентный спуск",
+            font_size=22,
+            color=m.RED,
+        )
+        gd_label.to_corner(m.UL, buff=1)
+
+        self.play(m.Create(gd_path), m.Write(gd_label), run_time=3)
+        self.wait(1)
+
+        # 6. Траектория метода Ньютона (прямая)
+        # Для квадратичной функции сходится за 1 шаг
+        # H = [[2, 0], [0, 8]], H^{-1} = [[0.5, 0], [0, 0.125]]
+        # Шаг: (x_new, y_new) = (x, y) - H^{-1} * grad = (0, 0)
+        newton_points = [(start_x, start_y), (0, 0)]
+        
+        newton_path = m.VMobject()
+        newton_path.set_points_smoothly([
+            axes.c2p(p[0], p[1]) for p in newton_points
+        ])
+        newton_path.set_color(m.GREEN)
+        newton_path.set_stroke(width=3)
+
+        newton_label = m.Text(
+            "метод Ньютона",
+            font_size=22,
+            color=m.GREEN,
+        )
+        newton_label.next_to(gd_label, m.DOWN, buff=0.3)
+
+        self.play(m.Create(newton_path), m.Write(newton_label), run_time=2)
+        self.wait(1)
+
+        # 7. Подпись с формулой
+        formula = m.MathTex(
+            r"L(x,y) = x^2 + 4y^2",
+            font_size=24,
+            color=m.BLACK,
+        )
+        formula.to_corner(m.UR, buff=0.5)
+
+        self.play(m.Write(formula), run_time=0.8)
+        self.wait(0.5)
+
+        # 8. Финальная подпись
+        final_note = m.Text(
+            "Метод Ньютона учитывает кривизну и идёт напрямую к минимуму",
+            font_size=20,
+            color=m.BLACK,
+        )
+        final_note.to_edge(m.DOWN, buff=1)
+
+        self.play(m.Write(final_note), run_time=1)
+        self.wait(2)
 # ========== НАСТРОЙКА ДЛЯ РЕНДЕРИНГА ==========
 
 # Устанавливаем директорию для вывода
@@ -1036,7 +1933,11 @@ if __name__ == '__main__':
        #"GradientDescent",
        #"ActivationFunctions",
        #"TaylorApproximation",
-       "NewtonMethod"
+       #"NewtonMethod",
+       #"PartialDerivatives2",
+       #"GradientVsNewton",
+       #"GradientVsNewton3D",
+       "GradientDescentVsNewton"
     ]
     
     file_path = Path(__file__).resolve()

@@ -491,7 +491,7 @@ class ConvergenceRates(Scene_):
     Демонстрирует разницу между линейной и квадратичной сходимостью.
     """
     def construct(self):
-        # 1. Параметры последовательностей (как в примере)
+        # 1. Параметры последовательностей
         n_max = 8
         q = 0.5
         a0 = 0.5
@@ -509,11 +509,19 @@ class ConvergenceRates(Scene_):
         linear_log = [safe_log10(v) for v in linear]
         quad_log = [safe_log10(v) for v in quadratic]
 
-        # 2. Оси — сдвигаем правее, чтобы метки Y поместились
+        # 2. Определяем, до какого n показывать красный график
+        # Находим первый индекс, где значение уходит за пределы оси
+        max_n_quad = next(
+            (i for i, v in enumerate(quadratic) if safe_log10(v) <= y_min_log),
+            len(quadratic)
+        )
+        n_values_quad = list(range(max_n_quad))  # только видимые точки
+
+        # 3. Оси
         axes = m.Axes(
             x_range=[0, n_max, 1],
             y_range=[y_min_log, 0.5, 2],
-            axis_config={"color": m.GRAY},
+            axis_config={"color": m.GRAY, "stroke_width": 1.5, "include_tip": False},
             x_axis_config={"numbers_to_include": n_values},
             y_axis_config={"numbers_to_include": [], "include_tip": False},
         )
@@ -526,7 +534,6 @@ class ConvergenceRates(Scene_):
             axes.y_axis.get_top(), m.UP, buff=0.2
         )
 
-        # Метки Y — уменьшенный размер шрифта
         y_ticks = m.VGroup()
         for k in range(0, y_min_log - 1, -2):
             y_val = float(k)
@@ -546,7 +553,7 @@ class ConvergenceRates(Scene_):
         )
         self.wait(0.3)
 
-        # 3. Линейная сходимость
+        # 4. Линейная сходимость (все точки от 0 до 8)
         lin_dots = m.VGroup()
         lin_lines = m.VGroup()
         for i, n in enumerate(n_values):
@@ -560,14 +567,13 @@ class ConvergenceRates(Scene_):
         self.play(m.Create(lin_dots), run_time=0.8)
         self.play(m.Create(lin_lines), run_time=0.6)
 
-        # Формулы из примера — справа от графика, ниже
+        # Синяя формула
         lin_formula = m.MathTex(
             "a_{n+1} = a_n / 2", color=m.BLUE, font_size=24
         )
         lin_formula.to_edge(m.RIGHT, buff=1.2)
         lin_formula.shift(m.UP * 1.0)
         
-        # ИСПРАВЛЕНО: используем m.Text для кириллицы
         lin_limit = m.Text(
             "предел = 0", color=m.BLUE, font_size=20
         )
@@ -576,27 +582,27 @@ class ConvergenceRates(Scene_):
         self.play(m.Write(lin_formula), m.Write(lin_limit), run_time=0.6)
         self.wait(0.3)
 
-        # 4. Квадратичная сходимость
+        # 5. Квадратичная сходимость (только видимые точки, до n=5)
         quad_dots = m.VGroup()
         quad_lines = m.VGroup()
-        for i, n in enumerate(n_values):
+        for i, n in enumerate(n_values_quad):
             pt = axes.c2p(n, quad_log[i])
             dot = m.Dot(pt, color=m.RED, radius=0.08)
             quad_dots.add(dot)
             if i > 0:
-                prev_pt = axes.c2p(n_values[i - 1], quad_log[i - 1])
+                prev_pt = axes.c2p(n_values_quad[i - 1], quad_log[i - 1])
                 quad_lines.add(m.Line(prev_pt, pt, color=m.RED, stroke_width=2))
 
         self.play(m.Create(quad_dots), run_time=0.8)
         self.play(m.Create(quad_lines), run_time=0.6)
 
+        # Красная формула
         quad_formula = m.MathTex(
             "a_{n+1} = a_n^2", color=m.RED, font_size=24
         )
         quad_formula.to_edge(m.RIGHT, buff=1.2)
         quad_formula.shift(m.DOWN * 1.0)
         
-        # ИСПРАВЛЕНО: используем m.Text для кириллицы
         quad_limit = m.Text(
             "предел = 0", color=m.RED, font_size=20
         )
@@ -1275,10 +1281,10 @@ if __name__ == '__main__':
         #"FunctionGraphs",
         #"ActivationFunctions",
         #"SqueezeTheorem",
-        #"ConvergenceRates",
+        "ConvergenceRates",
         #"ConvexityDefinition",
         #"ParametricCircle",
-        "VectorFieldDeformation2"
+        #"VectorFieldDeformation2"
         # Здесь будут другие сцены из главы 4
     ]
     
